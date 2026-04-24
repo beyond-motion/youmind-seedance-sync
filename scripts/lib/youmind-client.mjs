@@ -25,7 +25,8 @@ export async function fetchPromptsPage({
   locale = DEFAULT_LOCALE,
   model = DEFAULT_MODEL,
   query = "",
-  maxRetries = 10
+  maxRetries = 10,
+  requestTimeoutMs = 30000
 } = {}) {
   const body = {
     model,
@@ -39,24 +40,38 @@ export async function fetchPromptsPage({
   }
 
   for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: buildHeaders(locale),
-      body: JSON.stringify(body)
-    });
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: buildHeaders(locale),
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(requestTimeoutMs)
+      });
 
-    if (response.ok) {
-      return response.json();
+      if (response.ok) {
+        return response.json();
+      }
+
+      const shouldRetry = response.status === 429 || response.status >= 500;
+
+      if (!shouldRetry || attempt === maxRetries) {
+        throw new Error(`YouMind API failed: ${response.status} ${response.statusText}`);
+      }
+
+      const waitMs = response.status === 429 ? 5000 * (attempt + 1) : 2000 * (attempt + 1);
+      await sleep(waitMs);
+    } catch (error) {
+      const isTimeout = error?.name === "TimeoutError";
+      const isAbort = error?.name === "AbortError";
+      const isNetworkError = error instanceof TypeError;
+
+      if (!(isTimeout || isAbort || isNetworkError) || attempt === maxRetries) {
+        throw error;
+      }
+
+      const waitMs = 2000 * (attempt + 1);
+      await sleep(waitMs);
     }
-
-    const shouldRetry = response.status === 429 || response.status >= 500;
-
-    if (!shouldRetry || attempt === maxRetries) {
-      throw new Error(`YouMind API failed: ${response.status} ${response.statusText}`);
-    }
-
-    const waitMs = response.status === 429 ? 5000 * (attempt + 1) : 2000 * (attempt + 1);
-    await sleep(waitMs);
   }
 }
 

@@ -59,7 +59,6 @@ jobs:
         run: npm run fetch
 
       - name: Sync to Feishu via Open API
-        if: ${{ secrets.FEISHU_APP_ID != '' && secrets.FEISHU_APP_SECRET != '' && secrets.FEISHU_BASE_TOKEN != '' && secrets.FEISHU_TABLE_ID != '' }}
         env:
           YOUMIND_MODEL: seedance-2.0
           YOUMIND_LOCALE: zh-CN
@@ -67,7 +66,12 @@ jobs:
           FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
           FEISHU_BASE_TOKEN: ${{ secrets.FEISHU_BASE_TOKEN }}
           FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
-        run: npm run sync:api
+        run: |
+          if [[ -n "${FEISHU_APP_ID}" && -n "${FEISHU_APP_SECRET}" && -n "${FEISHU_BASE_TOKEN}" && -n "${FEISHU_TABLE_ID}" ]]; then
+            npm run sync:api
+          else
+            echo "Skipping Open API sync because required secrets are missing."
+          fi
 
       - name: Build site data
         env:

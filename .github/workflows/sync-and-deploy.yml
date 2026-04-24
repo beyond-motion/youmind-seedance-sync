@@ -13,6 +13,10 @@ on:
       - ".github/workflows/sync-and-deploy.yml"
       - "package.json"
 
+concurrency:
+  group: youmind-sync-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pages: write
@@ -34,6 +38,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+
+      - name: Configure persistent prompt cache
+        run: |
+          echo "YOUMIND_CACHE_DIR=$HOME/.cache/youmind-seedance-sync" >> "$GITHUB_ENV"
+          echo "YOUMIND_MAX_CACHE_AGE_HOURS=2" >> "$GITHUB_ENV"
+          echo "YOUMIND_ALLOW_STALE_CACHE_ON_ERROR=1" >> "$GITHUB_ENV"
+          echo "YOUMIND_MAX_RETRIES=2" >> "$GITHUB_ENV"
+          echo "YOUMIND_PAGE_DELAY_MS=2000" >> "$GITHUB_ENV"
+          mkdir -p "$HOME/.cache/youmind-seedance-sync"
 
       - name: Fetch latest prompts
         env:

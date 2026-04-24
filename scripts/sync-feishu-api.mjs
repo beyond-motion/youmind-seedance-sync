@@ -83,6 +83,8 @@ async function main() {
   console.log(
     source === "cache"
       ? `Using cached prompts snapshot (${payload.prompts.length} rows)`
+      : source === "stale-cache"
+        ? `Using stale cached prompts snapshot after fetch failure (${payload.prompts.length} rows)`
       : `Fetched fresh prompts snapshot (${payload.prompts.length} rows)`
   );
 

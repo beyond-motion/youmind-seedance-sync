@@ -10,6 +10,11 @@ function sleep(ms) {
   });
 }
 
+function readNumberEnv(name, fallback) {
+  const value = Number(process.env[name]);
+  return Number.isFinite(value) && value >= 0 ? value : fallback;
+}
+
 function buildHeaders(locale) {
   return {
     "content-type": "application/json",
@@ -25,8 +30,8 @@ export async function fetchPromptsPage({
   locale = DEFAULT_LOCALE,
   model = DEFAULT_MODEL,
   query = "",
-  maxRetries = 10,
-  requestTimeoutMs = 30000
+  maxRetries = readNumberEnv("YOUMIND_MAX_RETRIES", 10),
+  requestTimeoutMs = readNumberEnv("YOUMIND_REQUEST_TIMEOUT_MS", 30000)
 } = {}) {
   const body = {
     model,
@@ -59,6 +64,9 @@ export async function fetchPromptsPage({
       }
 
       const waitMs = response.status === 429 ? 5000 * (attempt + 1) : 2000 * (attempt + 1);
+      console.warn(
+        `Request page=${page} failed with ${response.status}. Retrying in ${Math.round(waitMs / 1000)}s (${attempt + 1}/${maxRetries}) ...`
+      );
       await sleep(waitMs);
     } catch (error) {
       const isTimeout = error?.name === "TimeoutError";
@@ -70,6 +78,9 @@ export async function fetchPromptsPage({
       }
 
       const waitMs = 2000 * (attempt + 1);
+      console.warn(
+        `Request page=${page} failed with ${error?.name || "unknown error"}. Retrying in ${Math.round(waitMs / 1000)}s (${attempt + 1}/${maxRetries}) ...`
+      );
       await sleep(waitMs);
     }
   }
@@ -80,7 +91,7 @@ export async function fetchAllPrompts({
   model = DEFAULT_MODEL,
   query = "",
   limit = 50,
-  pageDelayMs = 1200,
+  pageDelayMs = readNumberEnv("YOUMIND_PAGE_DELAY_MS", 1200),
   onProgress
 } = {}) {
   let page = 1;

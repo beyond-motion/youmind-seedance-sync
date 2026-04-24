@@ -1,4 +1,5 @@
 import fs from "fs";
+import os from "os";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -12,6 +13,35 @@ export const LOCAL_CONFIG_PATH = path.join(ROOT, ".seedance.local.json");
 
 export const DEFAULT_MODEL = "seedance-2.0";
 export const DEFAULT_LOCALE = "zh-CN";
+
+function expandPathLikeShell(value) {
+  if (!value) {
+    return value;
+  }
+
+  let expanded = value.trim();
+
+  if (expanded === "~") {
+    expanded = os.homedir();
+  } else if (expanded.startsWith("~/")) {
+    expanded = path.join(os.homedir(), expanded.slice(2));
+  }
+
+  expanded = expanded.replace(/\$([A-Z_][A-Z0-9_]*)/gi, (_, name) => process.env[name] || "");
+
+  return expanded;
+}
+
+function resolveDirPath(value, fallback) {
+  if (!value) {
+    return fallback;
+  }
+
+  const expanded = expandPathLikeShell(value);
+  return path.isAbsolute(expanded) ? expanded : path.resolve(ROOT, expanded);
+}
+
+export const CACHE_DIR = resolveDirPath(process.env.YOUMIND_CACHE_DIR || "", DATA_DIR);
 
 export function ensureDirSync(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });

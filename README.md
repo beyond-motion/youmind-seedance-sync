@@ -12,6 +12,7 @@
 - 飞书建表：本地通过 `lark-cli` 完成
 - GitHub 自动同步：优先支持自托管 Runner 直接复用本机 `lark-cli`，也兼容用 Open API 同步
 - 类似网站：`site/` 目录是纯静态前端，GitHub Pages 可直接部署
+- 自托管 Runner 会把提示词快照持久化到本机缓存目录，避免频繁全量抓取导致 YouMind `429 Too Many Requests`
 
 ## 为什么不是直接监听上游仓库 push
 
@@ -67,6 +68,18 @@ npm run bootstrap:lark
 - `npm run sync:lark:local-auth`
 
 这个脚本会先尝试刷新本机 `lark-cli` token，再用 `lark-cli` 直接同步飞书。
+
+另外，自托管工作流会设置：
+
+- `YOUMIND_CACHE_DIR=$HOME/.cache/youmind-seedance-sync`
+- `YOUMIND_MAX_CACHE_AGE_HOURS=2`
+- `YOUMIND_ALLOW_STALE_CACHE_ON_ERROR=1`
+
+效果是：
+
+- 2 小时内已有成功快照时，优先直接复用缓存
+- 缓存过期后会再尝试抓远端
+- 如果远端因为限流失败，但本机还有旧快照，工作流会自动回退到旧快照继续同步和部署
 
 ### 方案 B：GitHub 托管 Runner + Open API
 

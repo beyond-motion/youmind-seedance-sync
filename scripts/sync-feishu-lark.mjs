@@ -4,6 +4,29 @@ import { loadOrFetchPromptPayload } from "./lib/prompt-source.mjs";
 import { chunk, normalizePromptToRow, rowToValues } from "./lib/prompt-utils.mjs";
 import { FIELD_ORDER, LOOKUP_FIELDS } from "./lib/schema.mjs";
 
+function resolveLookupIndexes(fields) {
+  const indexes = new Map(fields.map((field, index) => [String(field), index]));
+  const promptIdIndex = indexes.get(LOOKUP_FIELDS[0]);
+  const contentHashIndex = indexes.get(LOOKUP_FIELDS[1]);
+  const activeIndex = indexes.get(LOOKUP_FIELDS[2]);
+
+  if (
+    !Number.isInteger(promptIdIndex) ||
+    !Number.isInteger(contentHashIndex) ||
+    !Number.isInteger(activeIndex)
+  ) {
+    throw new Error(
+      `Required lookup fields are missing from lark-cli response. fields=${JSON.stringify(fields)}`
+    );
+  }
+
+  return {
+    promptIdIndex,
+    contentHashIndex,
+    activeIndex
+  };
+}
+
 function listAllExistingRecords(baseToken, tableId) {
   const records = new Map();
   let offset = 0;
@@ -19,20 +42,15 @@ function listAllExistingRecords(baseToken, tableId) {
       "--limit",
       "100",
       "--offset",
-      String(offset),
-      "--field-id",
-      LOOKUP_FIELDS[0],
-      "--field-id",
-      LOOKUP_FIELDS[1],
-      "--field-id",
-      LOOKUP_FIELDS[2]
+      String(offset)
     ]);
 
     const data = response.data;
+    const { promptIdIndex, contentHashIndex, activeIndex } = resolveLookupIndexes(data.fields || []);
 
     for (let index = 0; index < data.record_id_list.length; index += 1) {
       const row = data.data[index] || [];
-      const promptId = row[0] ? String(row[0]) : "";
+      const promptId = row[promptIdIndex] ? String(row[promptIdIndex]) : "";
 
       if (!promptId) {
         continue;
@@ -40,8 +58,8 @@ function listAllExistingRecords(baseToken, tableId) {
 
       records.set(promptId, {
         recordId: data.record_id_list[index],
-        contentHash: row[1] ? String(row[1]) : "",
-        active: Boolean(row[2])
+        contentHash: row[contentHashIndex] ? String(row[contentHashIndex]) : "",
+        active: Boolean(row[activeIndex])
       });
     }
 

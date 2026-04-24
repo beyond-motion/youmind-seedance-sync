@@ -39,6 +39,8 @@ jobs:
         env:
           YOUMIND_MODEL: seedance-2.0
           YOUMIND_LOCALE: zh-CN
+          FEISHU_BASE_TOKEN: ${{ secrets.FEISHU_BASE_TOKEN }}
+          FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
         run: npm run sync:lark:local-auth
 
   sync-and-deploy:

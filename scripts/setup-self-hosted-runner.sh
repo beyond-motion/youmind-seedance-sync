@@ -10,6 +10,15 @@ PLIST_PATH="${HOME}/Library/LaunchAgents/com.github.actions.${REPO//\//-}.plist"
 
 mkdir -p "${RUNNER_BASE_DIR}"
 
+if [[ "$(uname -s)" == "Darwin" ]] && ! command -v gtar >/dev/null 2>&1; then
+  if ! command -v brew >/dev/null 2>&1; then
+    echo "Homebrew is required to install gnu-tar for GitHub Pages artifact uploads." >&2
+    exit 1
+  fi
+
+  brew install gnu-tar
+fi
+
 case "$(uname -s)-$(uname -m)" in
   Darwin-arm64)
     RUNNER_PLATFORM="osx-arm64"

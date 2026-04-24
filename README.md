@@ -62,6 +62,7 @@ npm run bootstrap:lark
 - 本机存在 `~/.lark-cli/refresh-token.py`
 - 仓库 Variables 里设置 `ENABLE_SELF_HOSTED_LARK_SYNC=1`
 - 本机 runner 带有 `youmind-sync` label
+- macOS self-hosted runner 需要可用的 `gtar`，`npm run setup:runner` 现在会自动通过 Homebrew 安装 `gnu-tar`
 
 工作流会在 self-hosted job 里直接执行：
 

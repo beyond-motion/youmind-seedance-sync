@@ -35,6 +35,12 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Fetch latest prompts
+        env:
+          YOUMIND_MODEL: seedance-2.0
+          YOUMIND_LOCALE: zh-CN
+        run: npm run fetch
+
       - name: Sync to Feishu with local lark-cli
         env:
           YOUMIND_MODEL: seedance-2.0
@@ -43,7 +49,25 @@ jobs:
           FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
         run: npm run sync:lark:local-auth
 
+      - name: Build site data
+        env:
+          YOUMIND_MODEL: seedance-2.0
+          YOUMIND_LOCALE: zh-CN
+        run: npm run build:site
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./site
+
+      - name: Deploy To GitHub Pages
+        uses: actions/deploy-pages@v4
+
   sync-and-deploy:
+    if: ${{ vars.ENABLE_SELF_HOSTED_LARK_SYNC != '1' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

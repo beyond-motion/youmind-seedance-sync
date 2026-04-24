@@ -1,0 +1,79 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export const ROOT = path.resolve(__dirname, "../..");
+export const DATA_DIR = path.join(ROOT, "data");
+export const SITE_DIR = path.join(ROOT, "site");
+export const LOCAL_CONFIG_PATH = path.join(ROOT, ".seedance.local.json");
+
+export const DEFAULT_MODEL = "seedance-2.0";
+export const DEFAULT_LOCALE = "zh-CN";
+
+export function ensureDirSync(dirPath) {
+  fs.mkdirSync(dirPath, { recursive: true });
+}
+
+export function readJsonIfExists(filePath) {
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+
+  return JSON.parse(fs.readFileSync(filePath, "utf8"));
+}
+
+export function writeJsonSync(filePath, value) {
+  ensureDirSync(path.dirname(filePath));
+  fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+}
+
+export function loadLocalConfig() {
+  return readJsonIfExists(LOCAL_CONFIG_PATH) ?? {};
+}
+
+export function writeLocalConfig(config) {
+  writeJsonSync(LOCAL_CONFIG_PATH, config);
+}
+
+export function resolveSyncTarget({ requireBase = true } = {}) {
+  const local = loadLocalConfig();
+
+  const config = {
+    model: process.env.YOUMIND_MODEL || local.model || DEFAULT_MODEL,
+    locale: process.env.YOUMIND_LOCALE || local.locale || DEFAULT_LOCALE,
+    baseToken:
+      process.env.FEISHU_BASE_TOKEN ||
+      local.baseToken ||
+      process.env.FEISHU_BASE_APP_TOKEN ||
+      "",
+    tableId:
+      process.env.FEISHU_TABLE_ID ||
+      local.tableId ||
+      process.env.FEISHU_BASE_TABLE_ID ||
+      "",
+    baseUrl: local.baseUrl || "",
+    baseName: local.baseName || "YouMind Seedance 2.0 Prompts"
+  };
+
+  if (requireBase && (!config.baseToken || !config.tableId)) {
+    throw new Error(
+      "Missing Feishu base target. Set FEISHU_BASE_TOKEN / FEISHU_TABLE_ID or create .seedance.local.json first."
+    );
+  }
+
+  return config;
+}
+
+export function resolveFeishuAppCredentials() {
+  const appId = process.env.FEISHU_APP_ID || "";
+  const appSecret = process.env.FEISHU_APP_SECRET || "";
+
+  if (!appId || !appSecret) {
+    throw new Error("Missing FEISHU_APP_ID or FEISHU_APP_SECRET.");
+  }
+
+  return { appId, appSecret };
+}

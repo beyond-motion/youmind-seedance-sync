@@ -1,0 +1,87 @@
+name: Sync And Deploy
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/**"
+      - "site/**"
+      - ".github/workflows/sync-and-deploy.yml"
+      - "package.json"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  sync-feishu-self-hosted:
+    if: ${{ vars.ENABLE_SELF_HOSTED_LARK_SYNC == '1' }}
+    runs-on:
+      - self-hosted
+      - macOS
+      - ARM64
+      - youmind-sync
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Sync to Feishu with local lark-cli
+        env:
+          YOUMIND_MODEL: seedance-2.0
+          YOUMIND_LOCALE: zh-CN
+        run: npm run sync:lark:local-auth
+
+  sync-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Fetch latest prompts
+        env:
+          YOUMIND_MODEL: seedance-2.0
+          YOUMIND_LOCALE: zh-CN
+        run: npm run fetch
+
+      - name: Sync to Feishu via Open API
+        if: ${{ secrets.FEISHU_APP_ID != '' && secrets.FEISHU_APP_SECRET != '' && secrets.FEISHU_BASE_TOKEN != '' && secrets.FEISHU_TABLE_ID != '' }}
+        env:
+          YOUMIND_MODEL: seedance-2.0
+          YOUMIND_LOCALE: zh-CN
+          FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
+          FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
+          FEISHU_BASE_TOKEN: ${{ secrets.FEISHU_BASE_TOKEN }}
+          FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
+        run: npm run sync:api
+
+      - name: Build site data
+        env:
+          YOUMIND_MODEL: seedance-2.0
+          YOUMIND_LOCALE: zh-CN
+        run: npm run build:site
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./site
+
+      - name: Deploy To GitHub Pages
+        uses: actions/deploy-pages@v4

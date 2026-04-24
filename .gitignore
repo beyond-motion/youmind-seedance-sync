@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+.env.local
+.seedance.local.json
+data/*.json
+site/data/
+source-repo/

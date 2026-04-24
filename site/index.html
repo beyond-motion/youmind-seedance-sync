@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Seedance Prompt Archive</title>
+    <meta
+      name="description"
+      content="Seedance 2.0 prompts archive with search, featured filters, and detail browsing."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="bg-grid"></div>
+    <main class="page-shell">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Seedance 2.0 Prompt Archive</p>
+          <h1>把 YouMind 提示词做成你自己的可检索素材库</h1>
+          <p class="hero-text">
+            这个轻量站点直接读取同步下来的 JSON。支持标题、描述、作者与提示词全文搜索，也保留精选标记和原始来源链接。
+          </p>
+          <div class="stats">
+            <div class="stat-card">
+              <span class="stat-label">Prompts</span>
+              <strong id="stat-total">-</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Featured</span>
+              <strong id="stat-featured">-</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Last Sync</span>
+              <strong id="stat-sync">-</strong>
+            </div>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <label class="search-block">
+            <span>搜索提示词</span>
+            <input id="search-input" type="search" placeholder="标题 / 描述 / 作者 / 提示词正文" />
+          </label>
+          <div class="toolbar">
+            <button id="toggle-featured" class="chip" type="button">只看精选</button>
+            <button id="clear-search" class="chip muted" type="button">清空</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="results-head">
+        <div>
+          <p class="section-kicker">Archive</p>
+          <h2>提示词列表</h2>
+        </div>
+        <p id="results-count" class="results-count">加载中...</p>
+      </section>
+
+      <section id="cards" class="card-grid"></section>
+      <section id="empty-state" class="empty-state hidden">
+        <h3>没有匹配结果</h3>
+        <p>可以试试更短的关键词，或者先取消“只看精选”。</p>
+      </section>
+    </main>
+
+    <dialog id="detail-modal" class="modal">
+      <div class="modal-shell">
+        <button id="close-modal" class="modal-close" type="button" aria-label="Close">×</button>
+        <div class="modal-media">
+          <img id="modal-thumb" alt="" />
+        </div>
+        <div class="modal-body">
+          <div class="modal-topline">
+            <span id="modal-badge" class="badge hidden">FEATURED</span>
+            <span id="modal-language" class="meta-pill"></span>
+            <span id="modal-date" class="meta-pill"></span>
+          </div>
+          <h3 id="modal-title"></h3>
+          <p id="modal-description" class="modal-description"></p>
+          <div class="modal-actions">
+            <a id="modal-source" class="link-button" target="_blank" rel="noreferrer">原始来源</a>
+            <a id="modal-detail" class="link-button ghost" target="_blank" rel="noreferrer">YouMind 页面</a>
+            <button id="copy-prompt" class="link-button ghost" type="button">复制提示词</button>
+          </div>
+          <div class="tab-row">
+            <button id="tab-translated" class="tab active" type="button">中文</button>
+            <button id="tab-original" class="tab" type="button">原文</button>
+          </div>
+          <pre id="modal-prompt" class="prompt-box"></pre>
+        </div>
+      </div>
+    </dialog>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

@@ -3,6 +3,7 @@ import { DATA_DIR, readJsonIfExists, resolveR2Config, resolveSyncTarget } from "
 import { FIELD_ORDER } from "./schema.mjs";
 import { runLarkCliJson } from "./lark-cli.mjs";
 import { loadOrFetchPromptPayload } from "./prompt-source.mjs";
+import { analyzePromptForSite } from "./prompt-insights.mjs";
 import {
   buildSiteVideoFields,
   normalizePromptToRow,
@@ -47,7 +48,8 @@ function sanitizeSitePrompt(prompt) {
     thumbnailUrl: prompt.thumbnailUrl || "",
     referenceImages: Array.isArray(prompt.referenceImages) ? prompt.referenceImages : [],
     mirrorStatus: prompt.mirrorStatus || "",
-    mirrorSyncedAt: prompt.mirrorSyncedAt || ""
+    mirrorSyncedAt: prompt.mirrorSyncedAt || "",
+    analysis: analyzePromptForSite(prompt)
   };
 }
 

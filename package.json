@@ -12,6 +12,8 @@
     "setup:r2": "node scripts/setup-r2.mjs",
     "setup:runner": "bash scripts/setup-self-hosted-runner.sh",
     "build:site": "node scripts/build-site.mjs",
+    "analyze:prompts": "node scripts/analyze-prompts.mjs",
+    "analyze:prompts:stable": "node scripts/analyze-prompts.mjs --stable",
     "prepare:site": "node scripts/fetch-prompts.mjs && node scripts/build-site.mjs"
   }
 }

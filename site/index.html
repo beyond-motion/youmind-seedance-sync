@@ -13,6 +13,39 @@
   <body>
     <div class="bg-grid"></div>
     <main class="page-shell">
+      <section class="control-dock" aria-label="搜索和筛选">
+        <div class="control-grid">
+          <label class="search-block control-search">
+            <span>Search</span>
+            <input id="search-input" type="search" placeholder="标题 / 描述 / 作者 / 提示词正文" />
+          </label>
+
+          <label class="select-block">
+            <span>Type</span>
+            <select id="genre-filter">
+              <option value="">全部类型</option>
+            </select>
+          </label>
+          <label class="select-block">
+            <span>Structure</span>
+            <select id="level-filter">
+              <option value="">全部结构</option>
+            </select>
+          </label>
+          <label class="select-block">
+            <span>Module</span>
+            <select id="tag-filter">
+              <option value="">全部模块</option>
+            </select>
+          </label>
+
+          <div class="toolbar control-actions">
+            <button id="toggle-featured" class="chip" type="button">精选</button>
+            <button id="clear-search" class="chip muted" type="button">清空</button>
+          </div>
+        </div>
+      </section>
+
       <section class="hero">
         <div class="hero-copy">
           <p class="eyebrow">Seedance 2.0 Prompt Archive</p>
@@ -40,17 +73,123 @@
             </div>
           </div>
         </div>
-        <div class="hero-panel">
-          <label class="search-block">
-            <span>搜索提示词</span>
-            <input id="search-input" type="search" placeholder="标题 / 描述 / 作者 / 提示词正文" />
-          </label>
-          <div class="toolbar">
-            <button id="toggle-featured" class="chip" type="button">只看精选</button>
-            <button id="clear-search" class="chip muted" type="button">清空</button>
+      </section>
+
+      <details id="builder-panel" class="builder-section" aria-labelledby="builder-title">
+        <summary class="builder-summary">
+          <div>
+            <p class="section-kicker">Builder</p>
+            <h2 id="builder-title">Seedance 创作面板</h2>
+          </div>
+          <div class="builder-summary-meta">
+            <strong id="builder-summary-line">-</strong>
+            <span class="builder-toggle-label" aria-hidden="true"></span>
+          </div>
+        </summary>
+
+        <div class="builder-content">
+          <div class="builder-actions">
+            <button id="remix-builder" class="chip" type="button">AI 生成测试变体</button>
+            <button id="copy-builder" class="chip" type="button">复制生成提示词</button>
+            <button id="filter-builder" class="chip" type="button">按 Builder 筛选</button>
+            <button id="reset-builder" class="chip muted" type="button">重置</button>
+          </div>
+
+          <div class="builder-grid">
+            <div class="builder-controls">
+              <div class="builder-row three">
+                <label class="select-block">
+                  <span>模板</span>
+                  <select id="builder-template">
+                    <option value="storyboard">15 秒分镜</option>
+                    <option value="standard">标准单场景</option>
+                    <option value="minimal">最小提示</option>
+                    <option value="image">图生视频</option>
+                    <option value="audio">音画同步</option>
+                  </select>
+                </label>
+                <label class="select-block">
+                  <span>类型</span>
+                  <select id="builder-genre">
+                    <option value="">选择类型</option>
+                  </select>
+                </label>
+                <label class="select-block">
+                  <span>画幅</span>
+                  <select id="builder-ratio">
+                    <option>16:9 横屏</option>
+                    <option>9:16 竖屏</option>
+                    <option>1:1 方形</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="builder-row two">
+                <label class="field-block">
+                  <span>时长</span>
+                  <input id="builder-duration" type="text" value="15 秒" />
+                </label>
+                <label class="field-block">
+                  <span>风格</span>
+                  <input id="builder-style" type="text" value="电影感，超写实，清晰主体，稳定镜头" />
+                </label>
+              </div>
+
+              <label class="field-block">
+                <span>主体</span>
+                <input id="builder-subject" type="text" placeholder="例如：一位穿白色西装的赛博朋克女主角" />
+              </label>
+              <label class="field-block">
+                <span>场景</span>
+                <input id="builder-scene" type="text" placeholder="例如：雨夜重庆立交桥下，湿滑柏油和霓虹倒影" />
+              </label>
+              <label class="field-block">
+                <span>动作</span>
+                <input id="builder-action" type="text" placeholder="例如：三步加速跨过护栏，落地后转身反击" />
+              </label>
+              <label class="field-block">
+                <span>镜头</span>
+                <input id="builder-camera" type="text" placeholder="例如：低角度手持跟拍，最后推到面部特写" />
+              </label>
+              <label class="field-block">
+                <span>光影</span>
+                <input id="builder-lighting" type="text" placeholder="例如：冷蓝雨夜，橙色车灯边缘光，浅景深" />
+              </label>
+              <label class="field-block">
+                <span>声音</span>
+                <input id="builder-audio" type="text" placeholder="例如：雨声、远处车流、低频鼓点、短句对白" />
+              </label>
+              <label class="field-block">
+                <span>约束</span>
+                <input
+                  id="builder-constraints"
+                  type="text"
+                  value="保持主体身份一致；无文字、字幕、水印、Logo；避免脸部变形、肢体异常、服装漂移。"
+                />
+              </label>
+            </div>
+
+            <div class="builder-output-panel">
+              <div class="output-head">
+                <span>Generated Prompt</span>
+                <strong id="builder-score">-</strong>
+              </div>
+              <pre id="builder-output" class="builder-output"></pre>
+              <div id="builder-references" class="builder-references"></div>
+              <div id="builder-remix" class="builder-remix hidden">
+                <div class="remix-head">
+                  <span>AI Test Variant</span>
+                  <div class="remix-actions">
+                    <button id="copy-remix" class="mini-button" type="button">复制</button>
+                    <button id="use-remix" class="mini-button" type="button">替换 Builder</button>
+                  </div>
+                </div>
+                <pre id="remix-output" class="remix-output"></pre>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      </details>
 
       <section class="results-head">
         <div>
@@ -79,10 +218,13 @@
           </div>
           <h3 id="modal-title"></h3>
           <p id="modal-description" class="modal-description"></p>
+          <div id="modal-insights" class="modal-insights"></div>
           <div class="modal-actions">
             <a id="modal-video" class="link-button" target="_blank" rel="noreferrer">播放视频</a>
             <a id="modal-source" class="link-button" target="_blank" rel="noreferrer">原始来源</a>
             <a id="modal-detail" class="link-button ghost" target="_blank" rel="noreferrer">YouMind 页面</a>
+            <button id="copy-template" class="link-button ghost" type="button">复制结构模板</button>
+            <button id="use-builder" class="link-button ghost" type="button">带入 Builder</button>
           </div>
           <div class="tab-row">
             <button id="tab-translated" class="tab active" type="button">中文</button>
@@ -92,6 +234,7 @@
             <button id="copy-prompt" class="copy-hover prompt-copy-button" type="button">复制</button>
             <pre id="modal-prompt" class="prompt-box"></pre>
           </div>
+          <div id="modal-related" class="modal-related"></div>
         </div>
       </div>
     </dialog>

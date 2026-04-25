@@ -1,6 +1,6 @@
-import { resolveSyncTarget, writeLocalConfig } from "./lib/config.mjs";
+import { loadLocalConfig, resolveSyncTarget, writeLocalConfig } from "./lib/config.mjs";
 import { runLarkCliJson } from "./lib/lark-cli.mjs";
-import { FIELD_DEFINITIONS } from "./lib/schema.mjs";
+import { ALL_FIELD_DEFINITIONS } from "./lib/schema.mjs";
 
 async function main() {
   const config = resolveSyncTarget({ requireBase: false });
@@ -30,7 +30,7 @@ async function main() {
 
   const table = tablePayload.data.table;
 
-  for (const field of FIELD_DEFINITIONS) {
+  for (const field of ALL_FIELD_DEFINITIONS) {
     console.log(`Creating field: ${field.name}`);
     runLarkCliJson([
       "base",
@@ -45,6 +45,7 @@ async function main() {
   }
 
   const localConfig = {
+    ...loadLocalConfig(),
     baseName,
     baseToken: base.base_token,
     tableId: table.id,

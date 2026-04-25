@@ -95,7 +95,7 @@ a {
   margin: 0;
   font-size: clamp(2.4rem, 5vw, 5rem);
   line-height: 0.96;
-  letter-spacing: -0.06em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
@@ -206,13 +206,16 @@ a {
 }
 
 .card-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  columns: 3 300px;
+  column-gap: 18px;
 }
 
 .prompt-card {
+  display: inline-block;
+  width: 100%;
+  margin: 0 0 18px;
   overflow: hidden;
+  break-inside: avoid;
 }
 
 .card-button {
@@ -232,6 +235,11 @@ a {
   background: linear-gradient(135deg, rgba(255, 122, 61, 0.22), rgba(31, 122, 140, 0.2));
 }
 
+.thumb-shell > .thumb {
+  position: absolute;
+  inset: 0;
+}
+
 .thumb,
 .modal-media img {
   width: 100%;
@@ -240,8 +248,24 @@ a {
 }
 
 .thumb,
-.modal-media img {
+.modal-media img,
+.modal-player {
   object-fit: cover;
+}
+
+.thumb-video {
+  background: #060606;
+}
+
+.thumb-poster {
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.thumb-video.playing + .thumb-poster,
+.card-button:hover .thumb-poster,
+.card-button:focus-visible .thumb-poster {
+  opacity: 0;
 }
 
 .placeholder {
@@ -303,6 +327,67 @@ a {
   color: #333;
 }
 
+.card-prompt-wrap {
+  position: relative;
+  padding: 0 16px 16px;
+}
+
+.card-prompt {
+  margin: 0;
+  max-height: 10.6em;
+  overflow: hidden;
+  padding: 12px 14px;
+  border: 2px solid rgba(17, 17, 17, 0.9);
+  background: #fffaf0;
+  color: #262626;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.card-prompt-wrap::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  height: 42px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(255, 250, 240, 0), #fffaf0);
+}
+
+.copy-hover {
+  position: absolute;
+  z-index: 3;
+  top: 10px;
+  right: 10px;
+  padding: 7px 10px;
+  border: 2px solid var(--line);
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 150ms ease, transform 150ms ease, background-color 150ms ease;
+}
+
+.copy-hover.copied {
+  background: var(--accent-2);
+}
+
+.card-prompt-wrap:hover .copy-hover,
+.card-prompt-wrap:focus-within .copy-hover,
+.prompt-panel:hover .copy-hover,
+.prompt-panel:focus-within .copy-hover,
+.copy-hover:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
 .empty-state {
   margin-top: 20px;
   padding: 28px;
@@ -346,6 +431,14 @@ a {
   min-height: 320px;
 }
 
+.modal-player {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  display: block;
+  background: #060606;
+}
+
 .modal-placeholder {
   width: 100%;
   height: 100%;
@@ -368,6 +461,14 @@ a {
   background: rgba(18, 18, 18, 0.84);
   color: white;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.9);
+}
+
+.media-overlay.compact {
+  inset: auto 16px 16px 16px;
+  grid-auto-flow: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
 }
 
 .media-chip {
@@ -422,7 +523,7 @@ a {
   margin: 0;
   font-size: clamp(1.8rem, 3vw, 2.8rem);
   line-height: 1;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 .modal-description {
@@ -461,9 +562,18 @@ a {
   color: white;
 }
 
+.prompt-panel {
+  position: relative;
+}
+
+.prompt-copy-button {
+  top: 12px;
+  right: 12px;
+}
+
 .prompt-box {
   margin: 0;
-  padding: 18px;
+  padding: 48px 18px 18px;
   min-height: 260px;
   max-height: 50vh;
   overflow: auto;
@@ -486,9 +596,12 @@ a {
 
 @media (max-width: 1024px) {
   .hero,
-  .modal-shell,
-  .card-grid {
+  .modal-shell {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .card-grid {
+    columns: 2 280px;
   }
 
   .modal-shell {
@@ -500,6 +613,10 @@ a {
     border-right: 0;
     border-bottom: 3px solid var(--line);
   }
+
+  .modal-player {
+    min-height: 240px;
+  }
 }
 
 @media (max-width: 720px) {
@@ -508,9 +625,12 @@ a {
   }
 
   .hero,
-  .stats,
-  .card-grid {
+  .stats {
     grid-template-columns: 1fr;
+  }
+
+  .card-grid {
+    columns: 1;
   }
 
   .results-head {

@@ -20,6 +20,15 @@ export const FIELD_DEFINITIONS = [
   { name: "Synced At", type: "text" }
 ];
 
+export const MIRROR_FIELD_DEFINITIONS = [
+  { name: "Original Video URL", type: "text" },
+  { name: "Mirror Video URL", type: "text" },
+  { name: "Mirror Status", type: "text" },
+  { name: "Mirror Synced At", type: "text" }
+];
+
 export const FIELD_ORDER = FIELD_DEFINITIONS.map((field) => field.name);
+export const MIRROR_FIELD_ORDER = MIRROR_FIELD_DEFINITIONS.map((field) => field.name);
+export const ALL_FIELD_DEFINITIONS = [...FIELD_DEFINITIONS, ...MIRROR_FIELD_DEFINITIONS];
 
 export const LOOKUP_FIELDS = ["Prompt ID", "Content Hash", "Active"];

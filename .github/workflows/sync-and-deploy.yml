@@ -62,6 +62,21 @@ jobs:
           FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
         run: npm run sync:lark:local-auth
 
+      - name: Mirror videos to R2
+        if: ${{ vars.ENABLE_R2_MIRROR == '1' }}
+        continue-on-error: true
+        env:
+          YOUMIND_MODEL: seedance-2.0
+          YOUMIND_LOCALE: zh-CN
+          FEISHU_BASE_TOKEN: ${{ secrets.FEISHU_BASE_TOKEN }}
+          FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
+          ENABLE_R2_MIRROR: ${{ vars.ENABLE_R2_MIRROR }}
+          YOUMIND_R2_BUCKET: ${{ vars.YOUMIND_R2_BUCKET }}
+          YOUMIND_R2_PUBLIC_URL_BASE: ${{ vars.YOUMIND_R2_PUBLIC_URL_BASE }}
+          YOUMIND_R2_LOCATION: ${{ vars.YOUMIND_R2_LOCATION }}
+          YOUMIND_R2_KEY_PREFIX: ${{ vars.YOUMIND_R2_KEY_PREFIX }}
+        run: npm run sync:r2
+
       - name: Build site data
         env:
           YOUMIND_MODEL: seedance-2.0

@@ -74,6 +74,104 @@ function getSearchText(prompt) {
     .toLowerCase();
 }
 
+function getDisplayPromptText(prompt) {
+  return prompt.translatedPrompt || prompt.prompt || "";
+}
+
+function getActivePromptText() {
+  if (!state.activePrompt) {
+    return "";
+  }
+
+  return state.modalPromptMode === "translated"
+    ? state.activePrompt.translatedPrompt || state.activePrompt.prompt || ""
+    : state.activePrompt.prompt || state.activePrompt.translatedPrompt || "";
+}
+
+function getReferenceVideoUrl(prompt) {
+  return prompt.mirrorVideoUrl || "";
+}
+
+async function writeClipboardText(text) {
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return;
+    } catch {
+      // Fall back for browsers that expose Clipboard API but block it in this context.
+    }
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+}
+
+function showCopiedState(button) {
+  if (!button) {
+    return;
+  }
+
+  const originalText = button.dataset.label || button.textContent || "复制";
+  button.dataset.label = originalText;
+  button.textContent = "已复制";
+  button.classList.add("copied");
+  window.clearTimeout(button.copyResetTimer);
+  button.copyResetTimer = window.setTimeout(() => {
+    button.textContent = originalText;
+    button.classList.remove("copied");
+  }, 1200);
+}
+
+async function copyPromptText(promptText, button) {
+  await writeClipboardText(promptText || "");
+  showCopiedState(button);
+}
+
+function ensurePreviewVideoLoaded(video) {
+  if (!video || video.src || !video.dataset.src) {
+    return;
+  }
+
+  video.src = video.dataset.src;
+  video.load();
+}
+
+function playPreviewVideo(video) {
+  if (!video) {
+    return;
+  }
+
+  ensurePreviewVideoLoaded(video);
+  video
+    .play()
+    .then(() => {
+      video.classList.add("playing");
+    })
+    .catch(() => {});
+}
+
+function pausePreviewVideo(video) {
+  if (!video) {
+    return;
+  }
+
+  video.pause();
+  video.classList.remove("playing");
+}
+
+function pauseAllPreviewVideos() {
+  elements.cards.querySelectorAll(".thumb-video").forEach((video) => {
+    pausePreviewVideo(video);
+  });
+}
+
 function applyFilters() {
   const normalizedQuery = state.query.trim().toLowerCase();
 
@@ -106,18 +204,29 @@ function renderCards() {
   const fragment = document.createDocumentFragment();
 
   for (const prompt of state.filtered) {
+    const previewVideoUrl = getReferenceVideoUrl(prompt);
+    const promptText = getDisplayPromptText(prompt);
     const article = document.createElement("article");
     article.className = "prompt-card";
     article.innerHTML = `
       <button class="card-button" type="button" data-id="${prompt.id}">
         <div class="thumb-shell">
           ${
-            prompt.thumbnailUrl
-              ? `<img class="thumb" src="${escapeHtml(prompt.thumbnailUrl)}" alt="${escapeHtml(prompt.title)}" />`
-              : `<div class="thumb placeholder"></div>`
+            previewVideoUrl
+              ? `<video class="thumb thumb-video" muted loop playsinline preload="none" poster="${escapeHtml(
+                  prompt.thumbnailUrl || ""
+                )}" data-src="${escapeHtml(previewVideoUrl)}" aria-label="${escapeHtml(prompt.title)} 视频预览"></video>`
+              : prompt.thumbnailUrl
+                ? `<img class="thumb" src="${escapeHtml(prompt.thumbnailUrl)}" alt="${escapeHtml(prompt.title)}" />`
+                : `<div class="thumb placeholder"></div>`
+          }
+          ${
+            previewVideoUrl && prompt.thumbnailUrl
+              ? `<img class="thumb thumb-poster" src="${escapeHtml(prompt.thumbnailUrl)}" alt="" loading="lazy" />`
+              : ""
           }
           ${prompt.featured ? `<span class="card-badge">FEATURED</span>` : ""}
-          ${prompt.videoEmbedUrl ? `<span class="media-flag">VIDEO</span>` : ""}
+          ${previewVideoUrl ? `<span class="media-flag">PREVIEW</span>` : ""}
         </div>
         <div class="card-body">
           <p class="card-meta">${escapeHtml(prompt.authorName || "Unknown")} · ${escapeHtml(
@@ -127,9 +236,36 @@ function renderCards() {
           <p>${escapeHtml(prompt.description || "No description.")}</p>
         </div>
       </button>
+      ${
+        promptText
+          ? `<div class="card-prompt-wrap">
+              <pre class="card-prompt">${escapeHtml(promptText)}</pre>
+              <button class="copy-hover card-copy" type="button" data-id="${prompt.id}" aria-label="复制提示词">复制</button>
+            </div>`
+          : ""
+      }
     `;
 
-    article.querySelector(".card-button").addEventListener("click", () => openModal(prompt.id));
+    const cardButton = article.querySelector(".card-button");
+    const previewVideo = article.querySelector(".thumb-video");
+    const copyButton = article.querySelector(".card-copy");
+
+    cardButton.addEventListener("click", () => openModal(prompt.id));
+
+    if (previewVideo) {
+      cardButton.addEventListener("mouseenter", () => playPreviewVideo(previewVideo));
+      cardButton.addEventListener("mouseleave", () => pausePreviewVideo(previewVideo));
+      cardButton.addEventListener("focus", () => playPreviewVideo(previewVideo));
+      cardButton.addEventListener("blur", () => pausePreviewVideo(previewVideo));
+    }
+
+    if (copyButton) {
+      copyButton.addEventListener("click", async (event) => {
+        event.stopPropagation();
+        await copyPromptText(promptText, copyButton);
+      });
+    }
+
     fragment.appendChild(article);
   }
 
@@ -147,12 +283,7 @@ function updateModalPrompt() {
     return;
   }
 
-  const promptText =
-    state.modalPromptMode === "translated"
-      ? state.activePrompt.translatedPrompt || state.activePrompt.prompt
-      : state.activePrompt.prompt || state.activePrompt.translatedPrompt;
-
-  elements.modalPrompt.textContent = promptText || "";
+  elements.modalPrompt.textContent = getActivePromptText();
   syncModalTabs();
 }
 
@@ -160,28 +291,47 @@ function renderModalMedia(prompt) {
   elements.modalMedia.innerHTML = "";
   const shell = document.createElement("div");
   shell.className = "modal-media-shell";
+  const referenceVideoUrl = getReferenceVideoUrl(prompt);
 
-  if (prompt.thumbnailUrl) {
+  if (referenceVideoUrl) {
+    const video = document.createElement("video");
+    video.className = "modal-player";
+    video.src = referenceVideoUrl;
+    video.controls = true;
+    video.playsInline = true;
+    video.preload = "metadata";
+
+    if (prompt.thumbnailUrl) {
+      video.poster = prompt.thumbnailUrl;
+    }
+
+    shell.appendChild(video);
+
+    const overlay = document.createElement("div");
+    overlay.className = "media-overlay compact";
+    overlay.innerHTML = `
+      <span class="media-chip">R2 Mirror</span>
+      <a class="media-overlay-link" href="${escapeHtml(referenceVideoUrl)}" target="_blank" rel="noreferrer">在新页打开</a>
+    `;
+    shell.appendChild(overlay);
+  } else if (prompt.thumbnailUrl) {
     const image = document.createElement("img");
     image.src = prompt.thumbnailUrl;
     image.alt = prompt.title || "";
     shell.appendChild(image);
-  } else {
-    const placeholder = document.createElement("div");
-    placeholder.className = "modal-placeholder";
-    placeholder.textContent = prompt.videoUrl ? "Video demo" : "No preview";
-    shell.appendChild(placeholder);
-  }
 
-  if (prompt.videoUrl) {
     const overlay = document.createElement("div");
     overlay.className = "media-overlay";
     overlay.innerHTML = `
-      <span class="media-chip">Cloudflare Stream</span>
-      <p class="media-note">上游视频限制了本站域名内嵌，请在新页打开播放。</p>
-      <a class="media-overlay-link" href="${escapeHtml(prompt.videoUrl)}" target="_blank" rel="noreferrer">打开示例视频</a>
+      <span class="media-chip">Mirror unavailable</span>
+      <p class="media-note">这条参考视频的源文件已失效，暂时没有可用的自有镜像。</p>
     `;
     shell.appendChild(overlay);
+  } else {
+    const placeholder = document.createElement("div");
+    placeholder.className = "modal-placeholder";
+    placeholder.textContent = "No preview";
+    shell.appendChild(placeholder);
   }
 
   elements.modalMedia.appendChild(shell);
@@ -194,6 +344,8 @@ function openModal(promptId) {
     return;
   }
 
+  pauseAllPreviewVideos();
+
   state.activePrompt = prompt;
   state.modalPromptMode = prompt.translatedPrompt ? "translated" : "original";
 
@@ -202,8 +354,9 @@ function openModal(promptId) {
   elements.modalDescription.textContent = prompt.description || "";
   elements.modalLanguage.textContent = prompt.language || "unknown";
   elements.modalDate.textContent = formatDate(prompt.sourcePublishedAt);
-  elements.modalVideo.href = prompt.videoUrl || "#";
-  elements.modalVideo.classList.toggle("hidden", !prompt.videoUrl);
+  elements.modalVideo.href = getReferenceVideoUrl(prompt) || "#";
+  elements.modalVideo.textContent = "R2 镜像视频";
+  elements.modalVideo.classList.toggle("hidden", !getReferenceVideoUrl(prompt));
   elements.modalSource.href = prompt.sourceLink || "#";
   elements.modalDetail.href = prompt.detailUrl || "#";
   elements.modalBadge.classList.toggle("hidden", !prompt.featured);
@@ -212,26 +365,19 @@ function openModal(promptId) {
 }
 
 function closeModal() {
+  const video = elements.modalMedia.querySelector("video");
+
+  if (video) {
+    video.pause();
+  }
+
   elements.modal.close();
   elements.modalMedia.innerHTML = "";
   state.activePrompt = null;
 }
 
 async function copyCurrentPrompt() {
-  if (!state.activePrompt) {
-    return;
-  }
-
-  const promptText =
-    state.modalPromptMode === "translated"
-      ? state.activePrompt.translatedPrompt || state.activePrompt.prompt
-      : state.activePrompt.prompt || state.activePrompt.translatedPrompt;
-
-  await navigator.clipboard.writeText(promptText || "");
-  elements.copyPrompt.textContent = "已复制";
-  window.setTimeout(() => {
-    elements.copyPrompt.textContent = "复制提示词";
-  }, 1200);
+  await copyPromptText(getActivePromptText(), elements.copyPrompt);
 }
 
 function bindEvents() {

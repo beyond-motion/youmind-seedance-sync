@@ -67,6 +67,14 @@ function getPrimaryVideo(prompt) {
   return null;
 }
 
+export function extractOriginalVideoUrl(prompt) {
+  const primaryVideo = getPrimaryVideo(prompt);
+  const caption = typeof primaryVideo?.caption === "string" ? primaryVideo.caption : "";
+  const match = caption.match(/Imported from URL:\s*(https?:\/\/\S+)/i);
+
+  return match ? match[1].trim() : "";
+}
+
 export function buildContentHash(row) {
   const stablePayload = {
     promptId: row["Prompt ID"],
@@ -128,6 +136,25 @@ export function getVideoEmbedUrl(videoUrl = "") {
   }
 }
 
+export function buildSiteVideoFields({
+  streamVideoUrl = "",
+  originalVideoUrl = "",
+  mirrorVideoUrl = ""
+} = {}) {
+  const normalizedStreamUrl = toText(streamVideoUrl);
+  const normalizedOriginalUrl = toText(originalVideoUrl);
+  const normalizedMirrorUrl = toText(mirrorVideoUrl);
+  const playbackUrl = normalizedMirrorUrl || normalizedOriginalUrl || "";
+
+  return {
+    videoUrl: normalizedStreamUrl,
+    originalVideoUrl: normalizedOriginalUrl,
+    mirrorVideoUrl: normalizedMirrorUrl,
+    playbackUrl,
+    videoEmbedUrl: normalizedMirrorUrl ? "" : getVideoEmbedUrl(normalizedStreamUrl)
+  };
+}
+
 export function rowValuesToObject(values, fieldOrder) {
   return Object.fromEntries(fieldOrder.map((fieldName, index) => [fieldName, values[index] ?? ""]));
 }
@@ -180,7 +207,10 @@ export function rowToValues(row, fieldOrder) {
 
 export function promptToSitePrompt(prompt, { locale }) {
   const primaryVideo = getPrimaryVideo(prompt);
-  const videoUrl = primaryVideo?.sourceUrl || "";
+  const videoFields = buildSiteVideoFields({
+    streamVideoUrl: primaryVideo?.sourceUrl || "",
+    originalVideoUrl: extractOriginalVideoUrl(prompt)
+  });
 
   return {
     id: prompt.id,
@@ -195,15 +225,18 @@ export function promptToSitePrompt(prompt, { locale }) {
     authorName: prompt.author?.name || "",
     authorLink: prompt.author?.link || "",
     detailUrl: `https://youmind.com/${locale}/seedance-2-0-prompts?id=${prompt.id}`,
-    videoUrl,
-    videoEmbedUrl: getVideoEmbedUrl(videoUrl),
+    ...videoFields,
     thumbnailUrl: primaryVideo?.thumbnail || "",
     referenceImages: splitUrlList(prompt.referenceImages || prompt.sourceReferenceImages || [])
   };
 }
 
 export function rowObjectToSitePrompt(row) {
-  const videoUrl = toText(row["Video URL"]);
+  const videoFields = buildSiteVideoFields({
+    streamVideoUrl: row["Video URL"],
+    originalVideoUrl: row["Original Video URL"],
+    mirrorVideoUrl: row["Mirror Video URL"]
+  });
 
   return {
     id: toText(row["Prompt ID"]),
@@ -219,12 +252,13 @@ export function rowObjectToSitePrompt(row) {
     authorName: toText(row.Author),
     authorLink: toText(row["Author Link"]),
     detailUrl: toText(row["Detail URL"]),
-    videoUrl,
-    videoEmbedUrl: getVideoEmbedUrl(videoUrl),
+    ...videoFields,
     thumbnailUrl: toText(row["Thumbnail URL"]),
     referenceImages: splitUrlList(row["Reference Images"]),
     model: toText(row.Model),
     contentHash: toText(row["Content Hash"]),
-    syncedAt: toText(row["Synced At"])
+    syncedAt: toText(row["Synced At"]),
+    mirrorStatus: toText(row["Mirror Status"]),
+    mirrorSyncedAt: toText(row["Mirror Synced At"])
   };
 }

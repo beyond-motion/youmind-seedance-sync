@@ -1,14 +1,16 @@
 import path from "path";
-import { DATA_DIR, readJsonIfExists, resolveSyncTarget } from "./config.mjs";
+import { DATA_DIR, readJsonIfExists, resolveR2Config, resolveSyncTarget } from "./config.mjs";
 import { FIELD_ORDER } from "./schema.mjs";
 import { runLarkCliJson } from "./lark-cli.mjs";
 import { loadOrFetchPromptPayload } from "./prompt-source.mjs";
 import {
+  buildSiteVideoFields,
   normalizePromptToRow,
   promptToSitePrompt,
   rowObjectToSitePrompt,
   rowValuesToObject
 } from "./prompt-utils.mjs";
+import { getMirrorRecord, loadMirrorManifest } from "./video-source.mjs";
 
 function getSnapshotPath(locale) {
   return path.join(DATA_DIR, `prompts.${locale}.json`);
@@ -38,9 +40,31 @@ function sanitizeSitePrompt(prompt) {
     authorLink: prompt.authorLink || "",
     detailUrl: prompt.detailUrl || "",
     videoUrl: prompt.videoUrl || "",
+    originalVideoUrl: prompt.originalVideoUrl || "",
+    mirrorVideoUrl: prompt.mirrorVideoUrl || "",
+    playbackUrl: prompt.playbackUrl || prompt.mirrorVideoUrl || prompt.originalVideoUrl || "",
     videoEmbedUrl: prompt.videoEmbedUrl || "",
     thumbnailUrl: prompt.thumbnailUrl || "",
-    referenceImages: Array.isArray(prompt.referenceImages) ? prompt.referenceImages : []
+    referenceImages: Array.isArray(prompt.referenceImages) ? prompt.referenceImages : [],
+    mirrorStatus: prompt.mirrorStatus || "",
+    mirrorSyncedAt: prompt.mirrorSyncedAt || ""
+  };
+}
+
+function mergePromptWithMirrorRecord(prompt, mirrorRecord) {
+  if (!mirrorRecord) {
+    return prompt;
+  }
+
+  return {
+    ...prompt,
+    ...buildSiteVideoFields({
+      streamVideoUrl: prompt.videoUrl,
+      originalVideoUrl: mirrorRecord.originalVideoUrl || prompt.originalVideoUrl,
+      mirrorVideoUrl: mirrorRecord.mirrorVideoUrl || prompt.mirrorVideoUrl
+    }),
+    mirrorStatus: mirrorRecord.status || prompt.mirrorStatus || "",
+    mirrorSyncedAt: mirrorRecord.syncedAt || prompt.mirrorSyncedAt || ""
   };
 }
 
@@ -237,10 +261,15 @@ function summarizeErrorMessage(error) {
   return message.replace(/\s+/g, " ").trim().slice(0, 320);
 }
 
-function buildPayloadFromSnapshot(snapshotPayload, target, fallbackReason = "") {
-  const prompts = snapshotPayload.prompts.map((prompt) =>
-    promptToSitePrompt(prompt, { locale: target.locale })
-  );
+function buildPayloadFromSnapshot(snapshotPayload, target, mirrorManifest, fallbackReason = "") {
+  const prompts = snapshotPayload.prompts.map((prompt) => {
+    const sitePrompt = promptToSitePrompt(prompt, { locale: target.locale });
+
+    return mergePromptWithMirrorRecord(
+      sitePrompt,
+      getMirrorRecord(mirrorManifest, prompt.id, sitePrompt.originalVideoUrl)
+    );
+  });
 
   return buildSitePayload({
     prompts,
@@ -255,6 +284,7 @@ function buildPayloadFromSnapshot(snapshotPayload, target, fallbackReason = "") 
 
 export async function loadSitePayloadForBuild() {
   const target = resolveSyncTarget({ requireBase: false });
+  const mirrorManifest = loadMirrorManifest(resolveR2Config().manifestPath);
   const siteSourceMode = process.env.SITE_SOURCE_MODE || "auto";
   const snapshotResult = await loadSnapshotPayload(target);
   const snapshotPayload = snapshotResult.payload;
@@ -265,7 +295,12 @@ export async function loadSitePayloadForBuild() {
     try {
       const rows = listAllRowsWithLark(target.baseToken, target.tableId);
       const prompts = rows
-        .map((row) => rowObjectToSitePrompt(row))
+        .map((row) =>
+          mergePromptWithMirrorRecord(
+            rowObjectToSitePrompt(row),
+            getMirrorRecord(mirrorManifest, row["Prompt ID"], row["Original Video URL"])
+          )
+        )
         .filter((prompt) => prompt.active !== false)
         .filter((prompt) => !prompt.model || prompt.model === target.model);
       const validation = validateFeishuPromptsAgainstSnapshot(prompts, snapshotPayload, target);
@@ -298,13 +333,13 @@ export async function loadSitePayloadForBuild() {
 
       return {
         source: "youmind-fallback",
-        payload: buildPayloadFromSnapshot(snapshotPayload, target, fallbackReason)
+        payload: buildPayloadFromSnapshot(snapshotPayload, target, mirrorManifest, fallbackReason)
       };
     }
   }
 
   return {
     source: "youmind",
-    payload: buildPayloadFromSnapshot(snapshotPayload, target)
+    payload: buildPayloadFromSnapshot(snapshotPayload, target, mirrorManifest)
   };
 }

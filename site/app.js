@@ -25,6 +25,7 @@ const elements = {
   modalDate: document.querySelector("#modal-date"),
   modalTitle: document.querySelector("#modal-title"),
   modalDescription: document.querySelector("#modal-description"),
+  modalVideo: document.querySelector("#modal-video"),
   modalSource: document.querySelector("#modal-source"),
   modalDetail: document.querySelector("#modal-detail"),
   modalPrompt: document.querySelector("#modal-prompt"),
@@ -157,33 +158,33 @@ function updateModalPrompt() {
 
 function renderModalMedia(prompt) {
   elements.modalMedia.innerHTML = "";
-
-  if (prompt.videoEmbedUrl) {
-    const iframe = document.createElement("iframe");
-    iframe.className = "modal-video";
-    iframe.src = prompt.videoEmbedUrl;
-    iframe.title = prompt.title || "Prompt video preview";
-    iframe.loading = "lazy";
-    iframe.allow =
-      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-    iframe.allowFullscreen = true;
-    iframe.referrerPolicy = "strict-origin-when-cross-origin";
-    elements.modalMedia.appendChild(iframe);
-    return;
-  }
+  const shell = document.createElement("div");
+  shell.className = "modal-media-shell";
 
   if (prompt.thumbnailUrl) {
     const image = document.createElement("img");
     image.src = prompt.thumbnailUrl;
     image.alt = prompt.title || "";
-    elements.modalMedia.appendChild(image);
-    return;
+    shell.appendChild(image);
+  } else {
+    const placeholder = document.createElement("div");
+    placeholder.className = "modal-placeholder";
+    placeholder.textContent = prompt.videoUrl ? "Video demo" : "No preview";
+    shell.appendChild(placeholder);
   }
 
-  const placeholder = document.createElement("div");
-  placeholder.className = "modal-placeholder";
-  placeholder.textContent = "No preview";
-  elements.modalMedia.appendChild(placeholder);
+  if (prompt.videoUrl) {
+    const overlay = document.createElement("div");
+    overlay.className = "media-overlay";
+    overlay.innerHTML = `
+      <span class="media-chip">Cloudflare Stream</span>
+      <p class="media-note">上游视频限制了本站域名内嵌，请在新页打开播放。</p>
+      <a class="media-overlay-link" href="${escapeHtml(prompt.videoUrl)}" target="_blank" rel="noreferrer">打开示例视频</a>
+    `;
+    shell.appendChild(overlay);
+  }
+
+  elements.modalMedia.appendChild(shell);
 }
 
 function openModal(promptId) {
@@ -201,6 +202,8 @@ function openModal(promptId) {
   elements.modalDescription.textContent = prompt.description || "";
   elements.modalLanguage.textContent = prompt.language || "unknown";
   elements.modalDate.textContent = formatDate(prompt.sourcePublishedAt);
+  elements.modalVideo.href = prompt.videoUrl || "#";
+  elements.modalVideo.classList.toggle("hidden", !prompt.videoUrl);
   elements.modalSource.href = prompt.sourceLink || "#";
   elements.modalDetail.href = prompt.detailUrl || "#";
   elements.modalBadge.classList.toggle("hidden", !prompt.featured);

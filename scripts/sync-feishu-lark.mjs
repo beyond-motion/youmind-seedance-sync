@@ -1,8 +1,8 @@
 import { resolveSyncTarget } from "./lib/config.mjs";
 import { runLarkCliJson } from "./lib/lark-cli.mjs";
 import { loadOrFetchPromptPayload } from "./lib/prompt-source.mjs";
-import { chunk, normalizePromptToRow, rowToValues } from "./lib/prompt-utils.mjs";
-import { FIELD_ORDER, LOOKUP_FIELDS } from "./lib/schema.mjs";
+import { normalizePromptToRow } from "./lib/prompt-utils.mjs";
+import { LOOKUP_FIELDS } from "./lib/schema.mjs";
 
 function resolveLookupIndexes(fields) {
   const indexes = new Map(fields.map((field, index) => [String(field), index]));
@@ -74,19 +74,16 @@ function listAllExistingRecords(baseToken, tableId) {
 }
 
 function batchCreateWithLark(baseToken, tableId, rows) {
-  for (const group of chunk(rows, 100)) {
+  for (const row of rows) {
     runLarkCliJson([
       "base",
-      "+record-batch-create",
+      "+record-upsert",
       "--base-token",
       baseToken,
       "--table-id",
       tableId,
       "--json",
-      JSON.stringify({
-        fields: FIELD_ORDER,
-        rows: group.map((row) => rowToValues(row, FIELD_ORDER))
-      })
+      JSON.stringify(row)
     ]);
   }
 }

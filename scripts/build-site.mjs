@@ -1,65 +1,28 @@
-import fs from "fs";
 import path from "path";
-import { DATA_DIR, SITE_DIR, resolveSyncTarget, writeJsonSync } from "./lib/config.mjs";
+import { SITE_DIR, writeJsonSync } from "./lib/config.mjs";
+import { loadSitePayloadForBuild } from "./lib/site-source.mjs";
 
-function readJson(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, "utf8"));
-}
+async function main() {
+  const { payload, source } = await loadSitePayloadForBuild();
+  const outputPath = path.join(SITE_DIR, "data", "prompts.json");
 
-function buildSitePayload(source) {
-  return {
-    generatedAt: source.fetchedAt,
-    locale: source.locale,
-    model: source.model,
-    total: source.total,
-    prompts: source.prompts.map((prompt) => ({
-      id: prompt.id,
-      title: prompt.title || "",
-      description: prompt.description || "",
-      prompt: prompt.content || "",
-      translatedPrompt: prompt.translatedContent || "",
-      language: prompt.language || "",
-      featured: Boolean(prompt.featured),
-      sourceLink: prompt.sourceLink || "",
-      sourcePublishedAt: prompt.sourcePublishedAt || "",
-      authorName: prompt.author?.name || "",
-      authorLink: prompt.author?.link || "",
-      detailUrl: `https://youmind.com/${source.locale}/seedance-2-0-prompts?id=${prompt.id}`,
-      videoUrl: prompt.videos?.[0]?.sourceUrl || "",
-      thumbnailUrl: prompt.videos?.[0]?.thumbnail || "",
-      referenceImages: Array.isArray(prompt.referenceImages)
-        ? prompt.referenceImages
-            .map((item) => {
-              if (typeof item === "string") {
-                return item;
-              }
+  writeJsonSync(outputPath, payload);
 
-              if (item && typeof item === "object" && typeof item.url === "string") {
-                return item.url;
-              }
+  console.log(`Site data written to ${outputPath}`);
+  console.log(`Site source: ${payload.dataSourceLabel} (${source})`);
 
-              return "";
-            })
-            .filter(Boolean)
-        : []
-    }))
-  };
-}
-
-function main() {
-  const { locale } = resolveSyncTarget({ requireBase: false });
-  const sourcePath = path.join(DATA_DIR, `prompts.${locale}.json`);
-
-  if (!fs.existsSync(sourcePath)) {
-    throw new Error(`Missing ${sourcePath}. Run npm run fetch first.`);
+  if (payload.validation?.checked) {
+    console.log(
+      `Feishu validation passed. expected=${payload.validation.expectedCount} actual=${payload.validation.actualCount}`
+    );
   }
 
-  const source = readJson(sourcePath);
-  const payload = buildSitePayload(source);
-
-  writeJsonSync(path.join(SITE_DIR, "data", "prompts.json"), payload);
-
-  console.log(`Site data written to ${path.join(SITE_DIR, "data", "prompts.json")}`);
+  if (payload.fallbackReason) {
+    console.warn(`Fell back to YouMind source: ${payload.fallbackReason}`);
+  }
 }
 
-main();
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

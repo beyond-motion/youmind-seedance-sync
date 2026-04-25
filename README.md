@@ -4,7 +4,7 @@
 
 1. 抓取 YouMind 公开分页接口，保存为本地 JSON。
 2. 同步到飞书多维表格。
-3. 生成一个可部署的轻量站点，方便你自己托管一个类似的浏览页。
+3. 先把飞书多维表格当成站点构建源，再生成一个可部署的轻量站点。
 
 ## 当前方案
 
@@ -12,6 +12,7 @@
 - 飞书建表：本地通过 `lark-cli` 完成
 - GitHub 自动同步：优先支持自托管 Runner 直接复用本机 `lark-cli`，也兼容用 Open API 同步
 - 类似网站：`site/` 目录是纯静态前端，GitHub Pages 可直接部署
+- 站点构建：优先从飞书多维表格回读数据并校验；如果飞书异常，再回退到 YouMind 快照 / 公开接口
 - 自托管 Runner 会把提示词快照持久化到本机缓存目录，避免频繁全量抓取导致 YouMind `429 Too Many Requests`
 
 ## 为什么不是直接监听上游仓库 push
@@ -99,12 +100,19 @@ npm run bootstrap:lark
 
 ## 站点构建
 
-先抓数据，再生成站点数据：
+先抓数据，再同步飞书，再生成站点数据：
 
 ```bash
 npm run fetch
+npm run sync:lark
 npm run build:site
 ```
+
+`npm run build:site` 的默认行为是：
+
+- 本地 / self-hosted 有可用飞书表格时，优先从飞书回读记录生成 `site/data/prompts.json`
+- 同时用刚抓下来的 YouMind 快照校验 `Prompt ID + Content Hash`
+- 如果飞书读取失败、数据缺失或校验不通过，就自动回退到 YouMind 快照
 
 生成后的静态数据文件在：
 
@@ -115,6 +123,8 @@ npm run build:site
 - `site/index.html`
 
 GitHub Actions 已经配置为自动部署到 GitHub Pages。
+
+站点详情弹窗现在会优先播放 Cloudflare Stream 示例视频；如果某条记录没有视频，再回退到缩略图。
 
 ## 数据表字段
 

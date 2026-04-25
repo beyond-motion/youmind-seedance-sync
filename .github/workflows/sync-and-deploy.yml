@@ -66,6 +66,9 @@ jobs:
         env:
           YOUMIND_MODEL: seedance-2.0
           YOUMIND_LOCALE: zh-CN
+          FEISHU_BASE_TOKEN: ${{ secrets.FEISHU_BASE_TOKEN }}
+          FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
+          SITE_SOURCE_MODE: feishu-first
         run: npm run build:site
 
       - name: Setup Pages
@@ -116,6 +119,7 @@ jobs:
         env:
           YOUMIND_MODEL: seedance-2.0
           YOUMIND_LOCALE: zh-CN
+          SITE_SOURCE_MODE: public-only
         run: npm run build:site
 
       - name: Setup Pages

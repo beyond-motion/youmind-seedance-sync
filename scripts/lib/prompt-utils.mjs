@@ -32,6 +32,33 @@ function joinUrlList(values) {
   return normalized.join("\n");
 }
 
+export function splitUrlList(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => {
+        if (typeof item === "string") {
+          return item.trim();
+        }
+
+        if (item && typeof item === "object" && typeof item.url === "string") {
+          return item.url.trim();
+        }
+
+        return "";
+      })
+      .filter(Boolean);
+  }
+
+  if (typeof value !== "string" || value.trim() === "") {
+    return [];
+  }
+
+  return value
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function getPrimaryVideo(prompt) {
   if (Array.isArray(prompt.videos) && prompt.videos.length > 0) {
     return prompt.videos[0];
@@ -61,6 +88,60 @@ export function buildContentHash(row) {
   };
 
   return crypto.createHash("sha256").update(JSON.stringify(stablePayload)).digest("hex");
+}
+
+export function coerceBoolean(value) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (typeof value === "number") {
+    return value !== 0;
+  }
+
+  if (typeof value === "string") {
+    return ["1", "true", "yes", "y", "on"].includes(value.trim().toLowerCase());
+  }
+
+  return false;
+}
+
+export function getVideoEmbedUrl(videoUrl = "") {
+  if (!videoUrl) {
+    return "";
+  }
+
+  try {
+    const url = new URL(videoUrl);
+
+    if (url.pathname.endsWith("/watch")) {
+      url.pathname = url.pathname.replace(/\/watch$/, "/iframe");
+    }
+
+    return url.toString();
+  } catch {
+    if (videoUrl.endsWith("/watch")) {
+      return `${videoUrl.slice(0, -"/watch".length)}/iframe`;
+    }
+
+    return "";
+  }
+}
+
+export function rowValuesToObject(values, fieldOrder) {
+  return Object.fromEntries(fieldOrder.map((fieldName, index) => [fieldName, values[index] ?? ""]));
+}
+
+function toText(value) {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "number" || typeof value === "boolean") {
+    return String(value);
+  }
+
+  return "";
 }
 
 export function normalizePromptToRow(prompt, { locale, model, syncedAt, active = true }) {
@@ -95,4 +176,55 @@ export function normalizePromptToRow(prompt, { locale, model, syncedAt, active =
 
 export function rowToValues(row, fieldOrder) {
   return fieldOrder.map((fieldName) => row[fieldName] ?? "");
+}
+
+export function promptToSitePrompt(prompt, { locale }) {
+  const primaryVideo = getPrimaryVideo(prompt);
+  const videoUrl = primaryVideo?.sourceUrl || "";
+
+  return {
+    id: prompt.id,
+    title: prompt.title || "",
+    description: prompt.description || "",
+    prompt: prompt.content || "",
+    translatedPrompt: prompt.translatedContent || "",
+    language: prompt.language || "",
+    featured: Boolean(prompt.featured),
+    sourceLink: prompt.sourceLink || "",
+    sourcePublishedAt: prompt.sourcePublishedAt || "",
+    authorName: prompt.author?.name || "",
+    authorLink: prompt.author?.link || "",
+    detailUrl: `https://youmind.com/${locale}/seedance-2-0-prompts?id=${prompt.id}`,
+    videoUrl,
+    videoEmbedUrl: getVideoEmbedUrl(videoUrl),
+    thumbnailUrl: primaryVideo?.thumbnail || "",
+    referenceImages: splitUrlList(prompt.referenceImages || prompt.sourceReferenceImages || [])
+  };
+}
+
+export function rowObjectToSitePrompt(row) {
+  const videoUrl = toText(row["Video URL"]);
+
+  return {
+    id: toText(row["Prompt ID"]),
+    title: toText(row.Title),
+    description: toText(row.Description),
+    prompt: toText(row.Prompt),
+    translatedPrompt: toText(row["Translated Prompt"]),
+    language: toText(row.Language),
+    featured: coerceBoolean(row.Featured),
+    active: coerceBoolean(row.Active),
+    sourceLink: toText(row["Source Link"]),
+    sourcePublishedAt: toText(row["Source Published At"]),
+    authorName: toText(row.Author),
+    authorLink: toText(row["Author Link"]),
+    detailUrl: toText(row["Detail URL"]),
+    videoUrl,
+    videoEmbedUrl: getVideoEmbedUrl(videoUrl),
+    thumbnailUrl: toText(row["Thumbnail URL"]),
+    referenceImages: splitUrlList(row["Reference Images"]),
+    model: toText(row.Model),
+    contentHash: toText(row["Content Hash"]),
+    syncedAt: toText(row["Synced At"])
+  };
 }

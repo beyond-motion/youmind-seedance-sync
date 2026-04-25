@@ -11,6 +11,7 @@ const elements = {
   total: document.querySelector("#stat-total"),
   featured: document.querySelector("#stat-featured"),
   sync: document.querySelector("#stat-sync"),
+  source: document.querySelector("#stat-source"),
   search: document.querySelector("#search-input"),
   clear: document.querySelector("#clear-search"),
   toggleFeatured: document.querySelector("#toggle-featured"),
@@ -18,7 +19,7 @@ const elements = {
   cards: document.querySelector("#cards"),
   empty: document.querySelector("#empty-state"),
   modal: document.querySelector("#detail-modal"),
-  modalThumb: document.querySelector("#modal-thumb"),
+  modalMedia: document.querySelector("#modal-media"),
   modalBadge: document.querySelector("#modal-badge"),
   modalLanguage: document.querySelector("#modal-language"),
   modalDate: document.querySelector("#modal-date"),
@@ -115,6 +116,7 @@ function renderCards() {
               : `<div class="thumb placeholder"></div>`
           }
           ${prompt.featured ? `<span class="card-badge">FEATURED</span>` : ""}
+          ${prompt.videoEmbedUrl ? `<span class="media-flag">VIDEO</span>` : ""}
         </div>
         <div class="card-body">
           <p class="card-meta">${escapeHtml(prompt.authorName || "Unknown")} · ${escapeHtml(
@@ -153,6 +155,37 @@ function updateModalPrompt() {
   syncModalTabs();
 }
 
+function renderModalMedia(prompt) {
+  elements.modalMedia.innerHTML = "";
+
+  if (prompt.videoEmbedUrl) {
+    const iframe = document.createElement("iframe");
+    iframe.className = "modal-video";
+    iframe.src = prompt.videoEmbedUrl;
+    iframe.title = prompt.title || "Prompt video preview";
+    iframe.loading = "lazy";
+    iframe.allow =
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+    iframe.allowFullscreen = true;
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+    elements.modalMedia.appendChild(iframe);
+    return;
+  }
+
+  if (prompt.thumbnailUrl) {
+    const image = document.createElement("img");
+    image.src = prompt.thumbnailUrl;
+    image.alt = prompt.title || "";
+    elements.modalMedia.appendChild(image);
+    return;
+  }
+
+  const placeholder = document.createElement("div");
+  placeholder.className = "modal-placeholder";
+  placeholder.textContent = "No preview";
+  elements.modalMedia.appendChild(placeholder);
+}
+
 function openModal(promptId) {
   const prompt = state.prompts.find((item) => String(item.id) === String(promptId));
 
@@ -163,8 +196,7 @@ function openModal(promptId) {
   state.activePrompt = prompt;
   state.modalPromptMode = prompt.translatedPrompt ? "translated" : "original";
 
-  elements.modalThumb.src = prompt.thumbnailUrl || "";
-  elements.modalThumb.alt = prompt.title || "";
+  renderModalMedia(prompt);
   elements.modalTitle.textContent = prompt.title || "";
   elements.modalDescription.textContent = prompt.description || "";
   elements.modalLanguage.textContent = prompt.language || "unknown";
@@ -178,6 +210,7 @@ function openModal(promptId) {
 
 function closeModal() {
   elements.modal.close();
+  elements.modalMedia.innerHTML = "";
   state.activePrompt = null;
 }
 
@@ -257,6 +290,7 @@ async function loadData() {
   elements.total.textContent = String(payload.total);
   elements.featured.textContent = String(prompts.filter((item) => item.featured).length);
   elements.sync.textContent = formatDate(payload.generatedAt);
+  elements.source.textContent = payload.dataSourceLabel || payload.dataSource || "Unknown";
 
   applyFilters();
 }

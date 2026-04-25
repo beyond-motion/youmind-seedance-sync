@@ -18,7 +18,8 @@
           <p class="eyebrow">Seedance 2.0 Prompt Archive</p>
           <h1>把 YouMind 提示词做成你自己的可检索素材库</h1>
           <p class="hero-text">
-            这个轻量站点直接读取同步下来的 JSON。支持标题、描述、作者与提示词全文搜索，也保留精选标记和原始来源链接。
+            站点优先读取飞书多维表格回读结果来生成静态 JSON，同时校验内容一致性；如果飞书异常，会自动回退到
+            YouMind 公开快照。现在详情里也支持直接预览示例视频，不再只有静态图。
           </p>
           <div class="stats">
             <div class="stat-card">
@@ -32,6 +33,10 @@
             <div class="stat-card">
               <span class="stat-label">Last Sync</span>
               <strong id="stat-sync">-</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Site Source</span>
+              <strong id="stat-source">-</strong>
             </div>
           </div>
         </div>
@@ -65,9 +70,7 @@
     <dialog id="detail-modal" class="modal">
       <div class="modal-shell">
         <button id="close-modal" class="modal-close" type="button" aria-label="Close">×</button>
-        <div class="modal-media">
-          <img id="modal-thumb" alt="" />
-        </div>
+        <div id="modal-media" class="modal-media"></div>
         <div class="modal-body">
           <div class="modal-topline">
             <span id="modal-badge" class="badge hidden">FEATURED</span>

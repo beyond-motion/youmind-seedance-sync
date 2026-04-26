@@ -1596,6 +1596,17 @@ function updateModalPrompt() {
   syncModalTabs();
 }
 
+function applyMediaAspect(shell, width, height) {
+  if (!shell || !Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+    return;
+  }
+
+  const ratio = width / height;
+  shell.style.setProperty("--media-aspect-ratio", `${width} / ${height}`);
+  shell.classList.toggle("is-portrait", ratio < 0.85);
+  shell.classList.toggle("is-square", ratio >= 0.85 && ratio <= 1.15);
+}
+
 function renderModalMedia(prompt) {
   elements.modalMedia.innerHTML = "";
   const shell = document.createElement("div");
@@ -1614,6 +1625,10 @@ function renderModalMedia(prompt) {
       video.poster = prompt.thumbnailUrl;
     }
 
+    video.addEventListener("loadedmetadata", () => {
+      applyMediaAspect(shell, video.videoWidth, video.videoHeight);
+    });
+
     shell.appendChild(video);
 
     const overlay = document.createElement("div");
@@ -1627,6 +1642,9 @@ function renderModalMedia(prompt) {
     const image = document.createElement("img");
     image.src = prompt.thumbnailUrl;
     image.alt = prompt.title || "";
+    image.addEventListener("load", () => {
+      applyMediaAspect(shell, image.naturalWidth, image.naturalHeight);
+    });
     shell.appendChild(image);
 
     const overlay = document.createElement("div");

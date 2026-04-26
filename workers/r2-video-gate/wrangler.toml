@@ -1,0 +1,14 @@
+name = "youmind-r2-video-gate"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+workers_dev = true
+
+[[r2_buckets]]
+binding = "VIDEOS"
+bucket_name = "violin86318-youmind-seedance-videos"
+
+[vars]
+ALLOWED_ORIGINS = "https://violin86318.github.io"
+ALLOW_LOCAL_PREVIEW = "1"
+ALLOW_EMPTY_REFERER = "0"
+ALLOWED_KEY_PREFIXES = "videos/"

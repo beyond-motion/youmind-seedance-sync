@@ -399,7 +399,7 @@ async function main() {
       if (
         !forceUpload &&
         previous?.status === "synced" &&
-        previous.mirrorVideoUrl === entry.mirrorVideoUrl &&
+        previous.objectKey === entry.objectKey &&
         previous.originalVideoUrl === entry.originalVideoUrl
       ) {
         stats.skipped += 1;

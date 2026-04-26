@@ -124,7 +124,39 @@ npm run build:site
 
 GitHub Actions 已经配置为自动部署到 GitHub Pages。
 
-站点详情弹窗现在会优先播放 Cloudflare Stream 示例视频；如果某条记录没有视频，再回退到缩略图。
+站点详情弹窗现在会优先播放 R2 镜像视频；如果某条记录没有视频，再回退到缩略图。
+
+## R2 视频防盗链
+
+R2 镜像视频不要长期使用公开 `r2.dev` 域名直出。项目里提供了一个 Worker 网关：
+
+```bash
+npm run deploy:video-gate
+```
+
+默认配置在 `workers/r2-video-gate/wrangler.toml`：
+
+- R2 bucket：`violin86318-youmind-seedance-videos`
+- 允许线上站点：`https://violin86318.github.io`
+- 允许本地预览：`http://localhost:*` / `http://127.0.0.1:*`
+- 拒绝没有 `Origin` / `Referer` 的直接访问
+- 只允许访问 `videos/` 前缀下的对象
+
+部署后，把站点使用的视频前缀切到 Worker 域名：
+
+```bash
+YOUMIND_R2_PUBLIC_URL_BASE=https://youmind-r2-video-gate.<你的-workers-subdomain>.workers.dev npm run set:r2-public-url
+YOUMIND_R2_PUBLIC_URL_BASE=https://youmind-r2-video-gate.<你的-workers-subdomain>.workers.dev npm run rewrite:r2-urls
+YOUMIND_R2_PUBLIC_URL_BASE=https://youmind-r2-video-gate.<你的-workers-subdomain>.workers.dev npm run build:site
+```
+
+GitHub Actions 里也要把仓库 Variable `YOUMIND_R2_PUBLIC_URL_BASE` 改成同一个 Worker URL。确认站点已经使用 Worker URL 后，再关闭公开 `r2.dev`：
+
+```bash
+npm run disable:r2-dev-url
+```
+
+如果站点部署到自己的 Cloudflare 域名，可以把 Worker 绑定到独立媒体域名，例如 `media.example.com`，再把 `YOUMIND_R2_PUBLIC_URL_BASE` 改成这个域名。与此同时，需要把实际站点来源加入 Worker 的 `ALLOWED_ORIGINS`，例如 `https://example.com,https://www.example.com,https://violin86318.github.io`。这样 R2 bucket 可以保持私有，公开视频入口只剩 Worker。
 
 ## 数据表字段
 

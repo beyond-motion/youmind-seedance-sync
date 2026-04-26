@@ -95,6 +95,10 @@ export function enableR2DevUrl(bucketName) {
   return runWranglerSync(["r2", "bucket", "dev-url", "enable", bucketName]);
 }
 
+export function disableR2DevUrl(bucketName) {
+  return runWranglerSync(["r2", "bucket", "dev-url", "disable", bucketName]);
+}
+
 export function uploadFileToR2({
   bucketName,
   objectKey,

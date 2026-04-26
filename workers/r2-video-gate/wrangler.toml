@@ -8,7 +8,7 @@ binding = "VIDEOS"
 bucket_name = "violin86318-youmind-seedance-videos"
 
 [vars]
-ALLOWED_ORIGINS = "https://violin86318.github.io"
+ALLOWED_ORIGINS = "https://violin86318.github.io,https://seedance.beyondmotion.net"
 ALLOW_LOCAL_PREVIEW = "1"
 ALLOW_EMPTY_REFERER = "0"
 ALLOWED_KEY_PREFIXES = "videos/"

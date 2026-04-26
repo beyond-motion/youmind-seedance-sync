@@ -86,6 +86,9 @@ jobs:
           SITE_SOURCE_MODE: feishu-first
         run: npm run build:site
 
+      - name: Deploy Cloudflare Pages
+        run: npx wrangler pages deploy site --project-name seedance --branch main --commit-dirty=true
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 

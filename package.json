@@ -13,6 +13,7 @@
     "sync:api": "node scripts/sync-feishu-api.mjs",
     "setup:r2": "node scripts/setup-r2.mjs",
     "deploy:video-gate": "npx wrangler deploy --config workers/r2-video-gate/wrangler.toml",
+    "deploy:seedance-site": "npx wrangler deploy --config workers/seedance-site/wrangler.toml",
     "disable:r2-dev-url": "node scripts/disable-r2-dev-url.mjs",
     "setup:runner": "bash scripts/setup-self-hosted-runner.sh",
     "build:site": "node scripts/build-site.mjs",

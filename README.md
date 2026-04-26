@@ -137,7 +137,7 @@ npm run deploy:video-gate
 默认配置在 `workers/r2-video-gate/wrangler.toml`：
 
 - R2 bucket：`violin86318-youmind-seedance-videos`
-- 允许线上站点：`https://violin86318.github.io`
+- 允许线上站点：`https://violin86318.github.io`、`https://seedance.beyondmotion.net`
 - 允许本地预览：`http://localhost:*` / `http://127.0.0.1:*`
 - 拒绝没有 `Origin` / `Referer` 的直接访问
 - 只允许访问 `videos/` 前缀下的对象
@@ -157,6 +157,25 @@ npm run disable:r2-dev-url
 ```
 
 如果站点部署到自己的 Cloudflare 域名，可以把 Worker 绑定到独立媒体域名，例如 `media.example.com`，再把 `YOUMIND_R2_PUBLIC_URL_BASE` 改成这个域名。与此同时，需要把实际站点来源加入 Worker 的 `ALLOWED_ORIGINS`，例如 `https://example.com,https://www.example.com,https://violin86318.github.io`。这样 R2 bucket 可以保持私有，公开视频入口只剩 Worker。
+
+## 自定义站点域名
+
+当前线上站点域名是：
+
+- `https://seedance.beyondmotion.net`
+
+部署链路是：
+
+- GitHub Actions 生成 `site/` 静态文件
+- 同步部署到 Cloudflare Pages 项目 `seedance`
+- `seedance-site` Worker 绑定 `seedance.beyondmotion.net`，并转发到 Pages 源站
+- R2 视频仍通过 `youmind-r2-video-gate` Worker 做来源校验
+
+手动部署站点 Worker：
+
+```bash
+npm run deploy:seedance-site
+```
 
 ## 数据表字段
 

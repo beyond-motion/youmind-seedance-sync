@@ -46,6 +46,8 @@ jobs:
           echo "YOUMIND_ALLOW_STALE_CACHE_ON_ERROR=1" >> "$GITHUB_ENV"
           echo "YOUMIND_MAX_RETRIES=2" >> "$GITHUB_ENV"
           echo "YOUMIND_PAGE_DELAY_MS=2000" >> "$GITHUB_ENV"
+          echo "LARK_CLI_RETRIES=6" >> "$GITHUB_ENV"
+          echo "LARK_CLI_RETRY_DELAY_MS=2000" >> "$GITHUB_ENV"
           mkdir -p "$HOME/.cache/youmind-seedance-sync"
 
       - name: Fetch latest prompts
@@ -55,6 +57,7 @@ jobs:
         run: npm run fetch
 
       - name: Sync to Feishu with local lark-cli
+        continue-on-error: true
         env:
           YOUMIND_MODEL: seedance-2.0
           YOUMIND_LOCALE: zh-CN
@@ -119,6 +122,7 @@ jobs:
         run: npm run fetch
 
       - name: Sync to Feishu via Open API
+        continue-on-error: true
         env:
           YOUMIND_MODEL: seedance-2.0
           YOUMIND_LOCALE: zh-CN

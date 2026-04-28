@@ -1,10 +1,30 @@
-# YouMind Seedance Sync
+# Seedance Prompt Sync
+
+独立的 Seedance 提示词同步与检索站点工程。项目代码为独立实现，不隶属于 YouMind。
 
 这个项目把 `https://youmind.com/zh-CN/seedance-2-0-prompts` 上的 Seedance 2.0 提示词做成三件事：
 
 1. 抓取 YouMind 公开分页接口，保存为本地 JSON。
 2. 同步到飞书多维表格。
 3. 先把飞书多维表格当成站点构建源，再生成一个可部署的轻量站点。
+
+## 许可与来源
+
+- 本仓库**自有代码**（同步脚本、站点构建、前端、Workers）采用 [MIT License](./LICENSE)。
+- 本仓库引用或改编的 **YouMind OpenLab 提示词内容/元数据**，其上游来源为：
+  - `https://youmind.com/zh-CN/seedance-2-0-prompts`
+  - `https://github.com/YouMind-OpenLab/awesome-seedance-2-prompts`
+- 上游公开提示词库当前发布的许可为 **CC BY 4.0**。二次分发或改编这些内容时，应：
+  - 标注来源与作者信息
+  - 链接原许可
+  - 明示改动
+  - 不暗示 YouMind 对本项目的认可或背书
+
+边界说明：
+
+- 本项目不是 YouMind 官方产品，也不应复刻其商标、Logo、站点文案或整体 look and feel。
+- 本仓库的 MIT 许可**不覆盖**第三方内容、商标和站点外观设计。
+- 更完整的第三方说明见 [NOTICE](./NOTICE)。
 
 ## 当前方案
 

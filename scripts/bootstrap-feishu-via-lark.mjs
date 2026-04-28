@@ -4,7 +4,7 @@ import { ALL_FIELD_DEFINITIONS } from "./lib/schema.mjs";
 
 async function main() {
   const config = resolveSyncTarget({ requireBase: false });
-  const baseName = config.baseName || "YouMind Seedance 2.0 Prompts";
+  const baseName = config.baseName || "Seedance Prompt Library";
 
   console.log(`Creating base: ${baseName}`);
   const basePayload = runLarkCliJson([

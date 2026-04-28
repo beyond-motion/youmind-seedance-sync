@@ -279,7 +279,7 @@ function buildPayloadFromSnapshot(snapshotPayload, target, mirrorManifest, fallb
     model: target.model,
     generatedAt: snapshotPayload.fetchedAt || new Date().toISOString(),
     dataSource: fallbackReason ? "youmind-fallback" : "youmind",
-    dataSourceLabel: fallbackReason ? "YouMind Fallback" : "YouMind Snapshot",
+    dataSourceLabel: fallbackReason ? "Public Snapshot Fallback" : "Public Snapshot",
     fallbackReason
   });
 }
@@ -322,7 +322,7 @@ export async function loadSitePayloadForBuild() {
             snapshotPayload?.fetchedAt
           ]),
           dataSource: "feishu",
-          dataSourceLabel: "Feishu Base",
+          dataSourceLabel: "Feishu Mirror",
           validation
         })
       };

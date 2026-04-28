@@ -18,7 +18,7 @@ async function main() {
   }
 
   if (payload.fallbackReason) {
-    console.warn(`Fell back to YouMind source: ${payload.fallbackReason}`);
+    console.warn(`Fell back to public snapshot source: ${payload.fallbackReason}`);
   }
 }
 

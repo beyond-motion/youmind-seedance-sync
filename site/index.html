@@ -48,11 +48,11 @@
 
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">Seedance 2.0 Prompt Archive</p>
-          <h1>把 YouMind 提示词做成你自己的可检索素材库</h1>
+          <p class="eyebrow">Seedance Prompt Index</p>
+          <h1>独立整理的 Seedance 提示词检索库</h1>
           <p class="hero-text">
-            站点优先读取飞书多维表格回读结果来生成静态 JSON，同时校验内容一致性；如果飞书异常，会自动回退到
-            YouMind 公开快照。详情里会优先播放镜像视频或原始 mp4，飞书/R2 异常时也保留直接回退。
+            站点优先读取飞书多维表格回读结果来生成静态 JSON，并校验内容一致性；如果飞书异常，会自动回退到公开快照。
+            详情里会优先播放自有镜像视频或原始 mp4，飞书/R2 异常时也保留回退链路。
           </p>
           <div class="stats">
             <div class="stat-card">
@@ -204,6 +204,27 @@
         <h3>没有匹配结果</h3>
         <p>可以试试更短的关键词，或者先取消“只看精选”。</p>
       </section>
+
+      <footer class="site-footer" aria-label="来源与许可说明">
+        <p>
+          This is an independent archive project. It is not affiliated with or endorsed by YouMind.
+        </p>
+        <p>
+          Prompt metadata and related content are adapted from public YouMind / YouMind OpenLab sources.
+          Upstream prompt-library content is attributed under
+          <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>.
+          This site's original code and implementation are separately maintained in this project.
+        </p>
+        <p>
+          Source reference:
+          <a
+            href="https://github.com/YouMind-OpenLab/awesome-seedance-2-prompts"
+            target="_blank"
+            rel="noreferrer"
+            >YouMind-OpenLab/awesome-seedance-2-prompts</a
+          >
+        </p>
+      </footer>
     </main>
 
     <dialog id="detail-modal" class="modal">
@@ -221,8 +242,8 @@
           <div id="modal-insights" class="modal-insights"></div>
           <div class="modal-actions">
             <a id="modal-video" class="link-button" target="_blank" rel="noopener">播放视频</a>
-            <a id="modal-source" class="link-button" target="_blank" rel="noreferrer">原始来源</a>
-            <a id="modal-detail" class="link-button ghost" target="_blank" rel="noreferrer">YouMind 页面</a>
+            <a id="modal-source" class="link-button" target="_blank" rel="noreferrer">来源链接</a>
+            <a id="modal-detail" class="link-button ghost" target="_blank" rel="noreferrer">详情页</a>
             <button id="copy-template" class="link-button ghost" type="button">复制结构模板</button>
             <button id="use-builder" class="link-button ghost" type="button">带入 Builder</button>
           </div>

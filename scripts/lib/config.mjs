@@ -122,7 +122,7 @@ export function resolveSyncTarget({ requireBase = true } = {}) {
       process.env.FEISHU_BASE_TABLE_ID ||
       "",
     baseUrl: merged.baseUrl || "",
-    baseName: merged.baseName || "YouMind Seedance 2.0 Prompts"
+    baseName: merged.baseName || "Seedance Prompt Library"
   };
 
   if (requireBase && (!config.baseToken || !config.tableId)) {

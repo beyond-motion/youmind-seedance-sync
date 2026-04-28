@@ -1,0 +1,28 @@
+Third-party content notice
+==========================
+
+This repository contains original code for data sync, site generation, and deployment.
+Unless otherwise noted, that code is licensed under the MIT License in `LICENSE`.
+
+This project also references and republishes prompt metadata and related content derived from
+YouMind public resources, including:
+
+- https://youmind.com/zh-CN/seedance-2-0-prompts
+- https://github.com/YouMind-OpenLab/awesome-seedance-2-prompts
+
+Upstream prompt-library content from `YouMind-OpenLab/awesome-seedance-2-prompts` is licensed
+by its publisher under Creative Commons Attribution 4.0 International (CC BY 4.0).
+
+When redistributing or adapting that upstream content, you should:
+
+1. Give appropriate attribution to YouMind OpenLab and the relevant original authors/sources.
+2. Link to the CC BY 4.0 license: https://creativecommons.org/licenses/by/4.0/
+3. Indicate whether changes were made.
+4. Avoid implying endorsement by YouMind or the original authors.
+
+Important boundary:
+
+- This repository is an independent project and is not affiliated with or endorsed by YouMind.
+- The MIT License here applies to this repository's original code, not automatically to third-party
+  prompt content, trademarks, logos, product names, or the YouMind website design / look and feel.
+- Reproducing the YouMind website UI, branding, or overall look and feel may require separate rights.

@@ -4,6 +4,40 @@ import { loadOrFetchPromptPayload } from "./lib/prompt-source.mjs";
 import { normalizePromptToRow } from "./lib/prompt-utils.mjs";
 import { LOOKUP_FIELDS } from "./lib/schema.mjs";
 
+const DEFAULT_RECORD_PAGE_LIMIT = 50;
+const MIN_RECORD_PAGE_LIMIT = 20;
+const DEFAULT_PAGE_RETRY_COUNT = 2;
+const DEFAULT_PAGE_RETRY_DELAY_MS = 2000;
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function getPositiveIntEnv(name, fallback) {
+  const value = Number.parseInt(process.env[name] || "", 10);
+  return Number.isFinite(value) && value > 0 ? value : fallback;
+}
+
+function isRetryableFeishuListError(error) {
+  const message = String(error?.message || "").toLowerCase();
+  return (
+    message.includes('"code": 5000') ||
+    message.includes("[5000]") ||
+    message.includes("api_error") ||
+    message.includes("too many requests") ||
+    message.includes("rate limit") ||
+    message.includes("timeout") ||
+    message.includes("timed out") ||
+    message.includes("econnreset") ||
+    message.includes("etimedout") ||
+    message.includes("socket hang up") ||
+    message.includes("internal server error") ||
+    message.includes("bad gateway") ||
+    message.includes("service unavailable") ||
+    message.includes("gateway timeout")
+  );
+}
+
 function resolveLookupIndexes(fields) {
   const indexes = new Map(fields.map((field, index) => [String(field), index]));
   const promptIdIndex = indexes.get(LOOKUP_FIELDS[0]);
@@ -27,29 +61,69 @@ function resolveLookupIndexes(fields) {
   };
 }
 
-function listAllExistingRecords(baseToken, tableId) {
+async function fetchRecordPage(baseToken, tableId, offset, limit) {
+  const retries = getPositiveIntEnv("LARK_SYNC_LIST_PAGE_RETRIES", DEFAULT_PAGE_RETRY_COUNT);
+  const baseDelayMs = getPositiveIntEnv(
+    "LARK_SYNC_LIST_PAGE_RETRY_DELAY_MS",
+    DEFAULT_PAGE_RETRY_DELAY_MS
+  );
+  let lastError;
+
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      return runLarkCliJson([
+        "base",
+        "+record-list",
+        "--base-token",
+        baseToken,
+        "--table-id",
+        tableId,
+        "--limit",
+        String(limit),
+        "--offset",
+        String(offset)
+      ]);
+    } catch (error) {
+      lastError = error;
+
+      if (attempt >= retries || !isRetryableFeishuListError(error)) {
+        break;
+      }
+
+      const delayMs = baseDelayMs * 2 ** attempt;
+      console.warn(
+        `Feishu record-list failed at offset=${offset} limit=${limit}. Retrying in ${delayMs}ms (${attempt + 1}/${retries}) ...`
+      );
+      await sleep(delayMs);
+    }
+  }
+
+  if (limit > MIN_RECORD_PAGE_LIMIT) {
+    const fallbackLimit = Math.max(MIN_RECORD_PAGE_LIMIT, Math.floor(limit / 2));
+    console.warn(
+      `Feishu record-list still failed at offset=${offset} with limit=${limit}. Falling back to smaller page size=${fallbackLimit}.`
+    );
+    return fetchRecordPage(baseToken, tableId, offset, fallbackLimit);
+  }
+
+  throw lastError;
+}
+
+async function listAllExistingRecords(baseToken, tableId) {
   const records = new Map();
   let offset = 0;
+  let page = 1;
+  const pageLimit = getPositiveIntEnv("LARK_SYNC_PAGE_LIMIT", DEFAULT_RECORD_PAGE_LIMIT);
 
   while (true) {
-    const response = runLarkCliJson([
-      "base",
-      "+record-list",
-      "--base-token",
-      baseToken,
-      "--table-id",
-      tableId,
-      "--limit",
-      "100",
-      "--offset",
-      String(offset)
-    ]);
-
+    const response = await fetchRecordPage(baseToken, tableId, offset, pageLimit);
     const data = response.data;
     const { promptIdIndex, contentHashIndex, activeIndex } = resolveLookupIndexes(data.fields || []);
+    const rows = Array.isArray(data.data) ? data.data : [];
+    const recordIds = Array.isArray(data.record_id_list) ? data.record_id_list : [];
 
-    for (let index = 0; index < data.record_id_list.length; index += 1) {
-      const row = data.data[index] || [];
+    for (let index = 0; index < recordIds.length; index += 1) {
+      const row = rows[index] || [];
       const promptId = row[promptIdIndex] ? String(row[promptIdIndex]) : "";
 
       if (!promptId) {
@@ -57,17 +131,20 @@ function listAllExistingRecords(baseToken, tableId) {
       }
 
       records.set(promptId, {
-        recordId: data.record_id_list[index],
+        recordId: recordIds[index],
         contentHash: row[contentHashIndex] ? String(row[contentHashIndex]) : "",
         active: Boolean(row[activeIndex])
       });
     }
 
+    console.log(`  loaded Feishu page=${page} rows=${rows.length} offset=${offset}`);
+
     if (!data.has_more) {
       break;
     }
 
-    offset += 100;
+    offset += rows.length > 0 ? rows.length : pageLimit;
+    page += 1;
   }
 
   return records;
@@ -126,7 +203,7 @@ async function main() {
   );
 
   console.log("Loading existing Feishu records ...");
-  const existing = listAllExistingRecords(target.baseToken, target.tableId);
+  const existing = await listAllExistingRecords(target.baseToken, target.tableId);
 
   const desiredRows = payload.prompts.map((prompt) =>
     normalizePromptToRow(prompt, {

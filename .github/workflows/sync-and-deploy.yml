@@ -3,7 +3,7 @@ name: Sync And Deploy
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 0 * * *"
   push:
     branches:
       - main
@@ -21,6 +21,12 @@ permissions:
   contents: read
   pages: write
   id-token: write
+
+env:
+  YOUMIND_MODEL: seedance-2.0
+  YOUMIND_LOCALE: zh-CN
+  YOUMIND_MAX_CACHE_AGE_HOURS: "12"
+  YOUMIND_ALLOW_STALE_CACHE_ON_ERROR: "1"
 
 jobs:
   sync-feishu-self-hosted:
@@ -42,8 +48,6 @@ jobs:
       - name: Configure persistent prompt cache
         run: |
           echo "YOUMIND_CACHE_DIR=$HOME/.cache/youmind-seedance-sync" >> "$GITHUB_ENV"
-          echo "YOUMIND_MAX_CACHE_AGE_HOURS=2" >> "$GITHUB_ENV"
-          echo "YOUMIND_ALLOW_STALE_CACHE_ON_ERROR=1" >> "$GITHUB_ENV"
           echo "YOUMIND_MAX_RETRIES=2" >> "$GITHUB_ENV"
           echo "YOUMIND_PAGE_DELAY_MS=2000" >> "$GITHUB_ENV"
           echo "LARK_CLI_RETRIES=6" >> "$GITHUB_ENV"
@@ -51,26 +55,37 @@ jobs:
           mkdir -p "$HOME/.cache/youmind-seedance-sync"
 
       - name: Fetch latest prompts
-        env:
-          YOUMIND_MODEL: seedance-2.0
-          YOUMIND_LOCALE: zh-CN
         run: npm run fetch
 
+      - name: Decide whether sync is needed
+        id: sync-gate
+        run: |
+          set -euo pipefail
+          state_file="$HOME/.cache/youmind-seedance-sync/prompt-snapshot.sha256"
+          current_hash="$(node scripts/print-prompt-snapshot-signature.mjs "data/prompts.${YOUMIND_LOCALE}.json")"
+          previous_hash="$(cat "$state_file" 2>/dev/null || true)"
+          should_sync="true"
+
+          if [[ "${GITHUB_EVENT_NAME}" == "schedule" && "$current_hash" == "$previous_hash" ]]; then
+            should_sync="false"
+            echo "Prompt snapshot unchanged on scheduled run; skipping sync/build/deploy steps."
+          fi
+
+          echo "current_hash=$current_hash" >> "$GITHUB_OUTPUT"
+          echo "should_sync=$should_sync" >> "$GITHUB_OUTPUT"
+
       - name: Sync to Feishu with local lark-cli
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' }}
         continue-on-error: true
         env:
-          YOUMIND_MODEL: seedance-2.0
-          YOUMIND_LOCALE: zh-CN
           FEISHU_BASE_TOKEN: ${{ secrets.FEISHU_BASE_TOKEN }}
           FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
         run: npm run sync:lark:local-auth
 
       - name: Mirror videos to R2
-        if: ${{ vars.ENABLE_R2_MIRROR == '1' }}
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && vars.ENABLE_R2_MIRROR == '1' }}
         continue-on-error: true
         env:
-          YOUMIND_MODEL: seedance-2.0
-          YOUMIND_LOCALE: zh-CN
           FEISHU_BASE_TOKEN: ${{ secrets.FEISHU_BASE_TOKEN }}
           FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
           ENABLE_R2_MIRROR: ${{ vars.ENABLE_R2_MIRROR }}
@@ -81,31 +96,82 @@ jobs:
         run: npm run sync:r2
 
       - name: Build site data
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' }}
         env:
-          YOUMIND_MODEL: seedance-2.0
-          YOUMIND_LOCALE: zh-CN
-          FEISHU_BASE_TOKEN: ${{ secrets.FEISHU_BASE_TOKEN }}
-          FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
-          SITE_SOURCE_MODE: feishu-first
+          SITE_SOURCE_MODE: public-only
         run: npm run build:site
 
+      - name: Decide whether deployment is needed
+        id: deploy-gate
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' }}
+        run: |
+          set -euo pipefail
+          state_file="$HOME/.cache/youmind-seedance-sync/site-data.sha256"
+          current_hash="$(shasum -a 256 site/data/prompts.json | awk '{print $1}')"
+          previous_hash="$(cat "$state_file" 2>/dev/null || true)"
+          should_deploy="true"
+
+          if [[ "${GITHUB_EVENT_NAME}" == "schedule" && "$current_hash" == "$previous_hash" ]]; then
+            should_deploy="false"
+            echo "Site payload unchanged on scheduled run; skipping deploy steps."
+          fi
+
+          echo "current_hash=$current_hash" >> "$GITHUB_OUTPUT"
+          echo "should_deploy=$should_deploy" >> "$GITHUB_OUTPUT"
+
       - name: Deploy Cloudflare Pages
-        run: npx wrangler pages deploy site --project-name seedance --branch main --commit-dirty=true
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' && secrets.CLOUDFLARE_API_TOKEN != '' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            if npx wrangler pages deploy site --project-name seedance --branch main --commit-dirty=true; then
+              exit 0
+            fi
+
+            if [[ "$attempt" -eq 3 ]]; then
+              exit 1
+            fi
+
+            sleep $((attempt * 15))
+          done
+
+      - name: Skip Cloudflare Pages deploy when token is missing
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' && secrets.CLOUDFLARE_API_TOKEN == '' }}
+        run: echo "Skipping Cloudflare Pages deploy because CLOUDFLARE_API_TOKEN is not configured."
 
       - name: Setup Pages
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' }}
         uses: actions/configure-pages@v5
 
       - name: Upload Pages Artifact
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./site
 
       - name: Deploy To GitHub Pages
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' }}
         uses: actions/deploy-pages@v4
+
+      - name: Persist prompt snapshot hash
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' "${{ steps.sync-gate.outputs.current_hash }}" > "$HOME/.cache/youmind-seedance-sync/prompt-snapshot.sha256"
+
+      - name: Persist deployed site hash
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' "${{ steps.deploy-gate.outputs.current_hash }}" > "$HOME/.cache/youmind-seedance-sync/site-data.sha256"
 
   sync-and-deploy:
     if: ${{ vars.ENABLE_SELF_HOSTED_LARK_SYNC != '1' }}
     runs-on: ubuntu-latest
+    env:
+      YOUMIND_CACHE_DIR: ${{ github.workspace }}/.cache/youmind-seedance-sync
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -115,17 +181,40 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Restore prompt cache
+        id: restore-prompt-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/youmind-seedance-sync
+          key: youmind-sync-cache-${{ runner.os }}-${{ env.YOUMIND_MODEL }}-${{ env.YOUMIND_LOCALE }}-${{ github.run_id }}
+          restore-keys: |
+            youmind-sync-cache-${{ runner.os }}-${{ env.YOUMIND_MODEL }}-${{ env.YOUMIND_LOCALE }}-
+
       - name: Fetch latest prompts
-        env:
-          YOUMIND_MODEL: seedance-2.0
-          YOUMIND_LOCALE: zh-CN
         run: npm run fetch
 
+      - name: Decide whether sync is needed
+        id: sync-gate
+        run: |
+          set -euo pipefail
+          mkdir -p "$YOUMIND_CACHE_DIR"
+          state_file="$YOUMIND_CACHE_DIR/prompt-snapshot.sha256"
+          current_hash="$(node scripts/print-prompt-snapshot-signature.mjs "data/prompts.${YOUMIND_LOCALE}.json")"
+          previous_hash="$(cat "$state_file" 2>/dev/null || true)"
+          should_sync="true"
+
+          if [[ "${GITHUB_EVENT_NAME}" == "schedule" && "$current_hash" == "$previous_hash" ]]; then
+            should_sync="false"
+            echo "Prompt snapshot unchanged on scheduled run; skipping sync/build/deploy steps."
+          fi
+
+          echo "current_hash=$current_hash" >> "$GITHUB_OUTPUT"
+          echo "should_sync=$should_sync" >> "$GITHUB_OUTPUT"
+
       - name: Sync to Feishu via Open API
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' }}
         continue-on-error: true
         env:
-          YOUMIND_MODEL: seedance-2.0
-          YOUMIND_LOCALE: zh-CN
           FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
           FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
           FEISHU_BASE_TOKEN: ${{ secrets.FEISHU_BASE_TOKEN }}
@@ -138,19 +227,59 @@ jobs:
           fi
 
       - name: Build site data
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' }}
         env:
-          YOUMIND_MODEL: seedance-2.0
-          YOUMIND_LOCALE: zh-CN
           SITE_SOURCE_MODE: public-only
         run: npm run build:site
 
+      - name: Decide whether deployment is needed
+        id: deploy-gate
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$YOUMIND_CACHE_DIR"
+          state_file="$YOUMIND_CACHE_DIR/site-data.sha256"
+          current_hash="$(shasum -a 256 site/data/prompts.json | awk '{print $1}')"
+          previous_hash="$(cat "$state_file" 2>/dev/null || true)"
+          should_deploy="true"
+
+          if [[ "${GITHUB_EVENT_NAME}" == "schedule" && "$current_hash" == "$previous_hash" ]]; then
+            should_deploy="false"
+            echo "Site payload unchanged on scheduled run; skipping deploy steps."
+          fi
+
+          echo "current_hash=$current_hash" >> "$GITHUB_OUTPUT"
+          echo "should_deploy=$should_deploy" >> "$GITHUB_OUTPUT"
+
       - name: Setup Pages
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' }}
         uses: actions/configure-pages@v5
 
       - name: Upload Pages Artifact
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./site
 
       - name: Deploy To GitHub Pages
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' }}
         uses: actions/deploy-pages@v4
+
+      - name: Persist prompt snapshot hash
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' "${{ steps.sync-gate.outputs.current_hash }}" > "$YOUMIND_CACHE_DIR/prompt-snapshot.sha256"
+
+      - name: Persist deployed site hash
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' "${{ steps.deploy-gate.outputs.current_hash }}" > "$YOUMIND_CACHE_DIR/site-data.sha256"
+
+      - name: Save prompt cache
+        if: ${{ always() }}
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/youmind-seedance-sync
+          key: ${{ steps.restore-prompt-cache.outputs.cache-primary-key }}

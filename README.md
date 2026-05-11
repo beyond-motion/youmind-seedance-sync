@@ -89,19 +89,27 @@ npm run bootstrap:lark
 
 - `npm run sync:lark:local-auth`
 
+如果你还要让同一个 self-hosted workflow 自动部署 Cloudflare Pages，还需要在仓库 Secrets 里配置：
+
+- `CLOUDFLARE_API_TOKEN`
+
 这个脚本会先尝试刷新本机 `lark-cli` token，再用 `lark-cli` 直接同步飞书。
 
 另外，自托管工作流会设置：
 
 - `YOUMIND_CACHE_DIR=$HOME/.cache/youmind-seedance-sync`
-- `YOUMIND_MAX_CACHE_AGE_HOURS=2`
+- `YOUMIND_MAX_CACHE_AGE_HOURS=12`
 - `YOUMIND_ALLOW_STALE_CACHE_ON_ERROR=1`
 
 效果是：
 
-- 2 小时内已有成功快照时，优先直接复用缓存
+- 12 小时内已有成功快照时，优先直接复用缓存
 - 缓存过期后会再尝试抓远端
 - 如果远端因为限流失败，但本机还有旧快照，工作流会自动回退到旧快照继续同步和部署
+- 定时任务现在改成每天一次（GitHub Actions 的 `0 0 * * *`，即北京时间每天 `08:00`）
+- 定时任务会先比较 prompt 快照签名；如果内容没变，就直接跳过飞书同步、R2 镜像、站点构建和部署
+- 定时任务如果生成出的 `site/data/prompts.json` 没变化，会直接跳过 Pages 部署，避免重复上传同一份站点
+- 如果没有配置 `CLOUDFLARE_API_TOKEN`，workflow 会跳过 Cloudflare Pages 部署，但仍继续 GitHub Pages 部署
 
 ### 方案 B：GitHub 托管 Runner + Open API
 

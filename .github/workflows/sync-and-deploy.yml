@@ -123,6 +123,7 @@ jobs:
 
       - name: Deploy Cloudflare Pages
         if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' && env.CLOUDFLARE_API_TOKEN != '' }}
+        continue-on-error: true
         run: |
           set -euo pipefail
           for attempt in 1 2 3; do

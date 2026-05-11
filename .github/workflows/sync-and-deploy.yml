@@ -36,6 +36,8 @@ jobs:
       - macOS
       - ARM64
       - youmind-sync
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -120,9 +122,7 @@ jobs:
           echo "should_deploy=$should_deploy" >> "$GITHUB_OUTPUT"
 
       - name: Deploy Cloudflare Pages
-        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' && secrets.CLOUDFLARE_API_TOKEN != '' }}
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' && env.CLOUDFLARE_API_TOKEN != '' }}
         run: |
           set -euo pipefail
           for attempt in 1 2 3; do
@@ -138,7 +138,7 @@ jobs:
           done
 
       - name: Skip Cloudflare Pages deploy when token is missing
-        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' && secrets.CLOUDFLARE_API_TOKEN == '' }}
+        if: ${{ steps.sync-gate.outputs.should_sync == 'true' && steps.deploy-gate.outputs.should_deploy == 'true' && env.CLOUDFLARE_API_TOKEN == '' }}
         run: echo "Skipping Cloudflare Pages deploy because CLOUDFLARE_API_TOKEN is not configured."
 
       - name: Setup Pages

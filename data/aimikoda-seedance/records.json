@@ -1,0 +1,292 @@
+[
+  {
+    "id": "2050607320950829551",
+    "title": "Cloud Skateboard Rescue Storyboard",
+    "date": "2026-05-02",
+    "sourceUrl": "https://x.com/aimikoda/status/2050607320950829551",
+    "mirrorUrl": "https://awesomevideoprompts.com/ja/prompts/2026-05/2050607320950829551-sketch-storyboard-seedance/",
+    "category": "Storyboard / Adventure",
+    "tags": [
+      "animation",
+      "storyboard",
+      "adventure",
+      "friendship",
+      "action"
+    ],
+    "prompt": "INTENT: Create a playful, high-energy friendship adventure that briefly turns tense when one rider is pulled into storm clouds, then resolves with a triumphant rescue and joyful return.\n\nSTYLE: stylized family-feature 3D animation feel, rounded expressive silhouettes, clean readable forms, soft cloud-rich atmosphere, bright sky blues shifting into charged storm grays, uplifting polished finish.\n\nWORLD: a sky-high cloudscape where skateboard-like boards glide across fluffy cloud paths, with open sunlight above and a dangerous storm pocket that feels alive with wind, rain, and lightning.\n\nREFERENCES:\n\nUse the provided previs storyboard page @[storyboard_image] as the main reference.\n\nDo not treat the page as one single image.\n\nTreat the panels as sequential shot keyframes and expand them into a coherent short scene with clear continuity.\n\nUse the @[character_sheet_image] as characters reference.\n\nVISUAL APPROACH:\n\nMatch the storyboard's spatial variety and emotional pacing.\n\nPrioritize readability, screen direction, and continuity of action across beats.\n\nKeep visual motion calm and intentional rather than restless.",
+    "media": {
+      "image": "https://awesomevideoprompts.com/prompts/2026-05/2050607320950829551-sketch-storyboard-seedance/cover.jpg",
+      "video": "https://awesomevideoprompts.com/prompts/2026-05/2050607320950829551-sketch-storyboard-seedance/video.mp4"
+    },
+    "notes": "Prompt and preview media mirrored by awesomevideoprompts.com.",
+    "localMedia": {
+      "image": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-05-02-cloud-skateboard-rescue-storyboard.jpg",
+      "video": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-05-02-cloud-skateboard-rescue-storyboard.mp4"
+    }
+  },
+  {
+    "id": "2048916070673649997",
+    "title": "Cinematic Summoning VFX Seedance 2.0",
+    "date": "2026-04-28",
+    "sourceUrl": "https://twitter.com/aimikoda/status/2048916070673649997",
+    "mirrorUrl": "https://awesomevideoprompts.com/ja/prompts/2026-04/2048916070673649997-cinematic-summoning-vfx-seedance/",
+    "category": "VFX / Character reference",
+    "tags": [
+      "vfx",
+      "cinematic",
+      "summoning",
+      "workflow"
+    ],
+    "prompt": "Use @[image1] as the character reference sheet. Maintain strong consistency in face, hair, outfit, silhouette and key accessories.\n\nCreate a cinematic 15s multi-cut VFX showcase video in realistic 3D.\n\nThe scene should have a realistic 3D look with high-end CGI quality, physically believable materials, cinematic lighting, volumetric atmosphere and strong depth. The character performs a summoning in a grounded real environment.\n\nStart with a calm setup shot. Then show the first trigger of the effect around the character or on the ground. The summon effect builds in clear stages, with energy gathering, symbols or forms activating, force rising and a visible presence emerging. Show the summoned entity, object or presence appearing gradually and clearly from the effect.\n\nThe character must move naturally with the effect and feel like they are channeling, directing and controlling the summon. Avoid stiff posing. Use body language, gesture and reaction that match the buildup and force of the effect.\n\nStructure:\n- setup shot\n- activation detail shot\n- build-up shot\n- peak summoning shot\n- emergence shot\n- final hero shot with the summon fully present\n\nRealistic 3D, cinematic, high-end CGI, visually grounded, readable VFX, smooth shot progression, believable lighting interaction, strong atmosphere. No text, no subtitles, no watermark.",
+    "media": {
+      "image": "https://awesomevideoprompts.com/prompts/2026-04/2048916070673649997-cinematic-summoning-vfx-seedance/cover.jpg",
+      "video": "https://awesomevideoprompts.com/prompts/2026-04/2048916070673649997-cinematic-summoning-vfx-seedance/video.mp4"
+    },
+    "notes": "Prompt and preview media mirrored by awesomevideoprompts.com.",
+    "localMedia": {
+      "image": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-28-cinematic-summoning-vfx-seedance-2-0.jpg",
+      "video": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-28-cinematic-summoning-vfx-seedance-2-0.mp4"
+    }
+  },
+  {
+    "id": "2045492290882281645",
+    "title": "Streamer Jumpscare Moment",
+    "date": "2026-04-19",
+    "sourceUrl": "https://x.com/aimikoda/status/2045492290882281645",
+    "mirrorUrl": "https://awesomevideoprompts.com/ja/prompts/2026-04/2045492290882281645-seedance-streamer-jumpscare/",
+    "category": "Horror / Gaming",
+    "tags": [
+      "horror",
+      "gaming",
+      "cinematic",
+      "multi-shot",
+      "vlog"
+    ],
+    "prompt": "FORMAT: 15s / 1 shot / live crypt gameplay with streamer inset\n\nSUBJECTS: One blonde female streamer in a headset and dim cold room light plays a first-person horror game in the main live frame while a small horizontal bottom-right facecam inset shows her exaggerated comic fear.\n\nSCENE: Lock the main frame as raw live horror gameplay in one uninterrupted take. Embed a small bordered landscape picture-in-picture in the bottom right. Start as the player descends narrow stone steps into a graveyard crypt with a flickering flashlight, wet stone walls, carved tomb niches, hanging roots, and drifting dust. Settle on one half-open stone coffin, push closer to inspect a weathered inscription. Keep the bottom-right inset visible throughout, showing the streamer leaning closer to the screen with tense shoulders, narrowed focus, fast breathing, hands tightening on mouse and keyboard. Make the inset inherit every gameplay jolt and sound hit. Trigger the jumpscare when the coffin lid jerks wider and a gaunt burial figure explodes straight up out of the coffin and lunges directly into the gameplay lens. On that instant, show the streamer snap absurdly backward, let out an over-the-top scream, jolt the chair, whip her hair, and recoil with half-comic, half-genuine panic. Finish on the impact aftermath with the creature still close in the main frame and the streamer remaining bug-eyed, frozen, and embarrassed for the landing beat.\n\nMOOD: Claustrophobic dread, comic panic, abrupt impact.\nCOLOR LOGIC: Day for Night\nSTYLE: Cinematic realism, suspense horror, exaggerated streamer reaction",
+    "media": {
+      "image": "https://awesomevideoprompts.com/prompts/2026-04/2045492290882281645-seedance-streamer-jumpscare/cover.jpg",
+      "video": "https://awesomevideoprompts.com/prompts/2026-04/2045492290882281645-seedance-streamer-jumpscare/video.mp4"
+    },
+    "notes": "Prompt and preview media mirrored by awesomevideoprompts.com.",
+    "localMedia": {
+      "image": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-19-streamer-jumpscare-moment.jpg",
+      "video": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-19-streamer-jumpscare-moment.mp4"
+    }
+  },
+  {
+    "id": "2044573683377991767",
+    "title": "Seedance 2.0 Time Travel Jumps — 12 Eras in 15 Seconds",
+    "date": "2026-04-16",
+    "sourceUrl": "https://x.com/aimikoda/status/2044573683377991767",
+    "mirrorUrl": "https://awesomevideoprompts.com/ja/prompts/2026-04/2044573683377991767-seedance-time-travel-jumps/",
+    "category": "Time-travel / Transformation",
+    "tags": [
+      "time-travel",
+      "action",
+      "multi-shot",
+      "transformation",
+      "cinematic"
+    ],
+    "prompt": "Fully configurable prompt using your own photo (Mitte supports it). Jump between cities, timelines or game worlds. Character moves forward continuously with outfit changes per jump, speed gradually increasing (walk → fast walk → run → panic run → slow). Snap finger to trigger instant transition.\n\nJUMP_MODE: time travel\nSEQUENCE:\n1. prehistoric jungle (distant dinosaur)\n2. volcanic prehistoric land (ash falling)\n3. ancient Egypt (sand gust)\n4. ancient Rome street (crowd)\n5. medieval battlefield (horse rush)\n6. plague-era town (tension rises)\n7. industrial revolution street (steam burst)\n8. early modern city (vehicles rush)\n9. near future city (drones pass)\n10. advanced future (holograms glitch)\n11. collapsing far future (structures folding)\n12. surreal future void (slows, breathing stabilizes)\n\nFinal: snap again → seamless loop.",
+    "media": {
+      "image": "https://awesomevideoprompts.com/prompts/2026-04/2044573683377991767-seedance-time-travel-jumps/cover.jpg",
+      "video": "https://awesomevideoprompts.com/prompts/2026-04/2044573683377991767-seedance-time-travel-jumps/video.mp4"
+    },
+    "notes": "Prompt and preview media mirrored by awesomevideoprompts.com.",
+    "localMedia": {
+      "image": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-16-seedance-2-0-time-travel-jumps-12-eras-in-15-seconds.jpg",
+      "video": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-16-seedance-2-0-time-travel-jumps-12-eras-in-15-seconds.mp4"
+    }
+  },
+  {
+    "id": "2044830615434854449",
+    "title": "Infinite Fight Scenes From One Prompt",
+    "date": "2026-04-16",
+    "sourceUrl": "https://x.com/aimikoda/status/2044830615434854449",
+    "category": "Action / Parametric combat",
+    "tags": [
+      "fight",
+      "template",
+      "combat",
+      "parametric",
+      "action"
+    ],
+    "prompt": "Seedance 2.0 1080p\n\nInfinite Fight Scenes From One Prompt\n\nCreated a parametric prompt for epic fight scenes. You can generate unlimited variations just by changing the parameters. Tested one generation in 1080p with Seedance 2.0 on Higgsfield.\n\nPrompt Template:\n\nFORMAT: 15s / continuous fight\n\nCHARACTERS\nA: [character_A]\nB: [character_B]\n\nENVIRONMENT\n[short description]\n\nFIGHT PROFILE\nSTYLE: [brutal / elegant / tactical / chaotic / cinematic]\nENERGY: [low / medium / high / explosive]\nWEAPONS: [none / melee / mixed]\nINTENT: [duel / assassination / survival / dominance / training]\n\nVISUAL\nCinematic realism, physical lighting, shallow DOF, subtle grain, natural motion blur.\n\nDIRECTIVE\nNo fixed choreography. Fight emerges dynamically from characters, environment, and momentum.\n\nBEHAVIOR\n- Use environment freely (walls, ground, objects)\n- Allow verticality (climb, wall-run, elevation shifts)\n- Encourage unexpected but physically valid actions\n\nRULES\n- Momentum chain only, no isolated actions\n- Clear positioning at all times\n- Continuous, motivated camera (POV / OTS / wide / low-high as needed)\n- Environment actively reacts",
+    "media": {
+      "image": "https://pbs.twimg.com/amplify_video_thumb/2044829187370835968/img/lg-RjPLd7i2zL9bN.jpg",
+      "video": "https://video.twimg.com/amplify_video/2044829187370835968/vid/avc1/1920x1080/afn9k8ZMdpVD36li.mp4"
+    },
+    "notes": "This is the quoted template tweet referenced by the multi-opponent variant.",
+    "localMedia": {
+      "image": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-16-infinite-fight-scenes-from-one-prompt.jpg",
+      "video": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-16-infinite-fight-scenes-from-one-prompt.mp4"
+    }
+  },
+  {
+    "id": "2044924236058255656",
+    "title": "Infinite Fight Scenes Variant: Multiple Opponents",
+    "date": "2026-04-16",
+    "sourceUrl": "https://x.com/aimikoda/status/2044924236058255656",
+    "category": "Action / Combat variants",
+    "tags": [
+      "fight",
+      "combat",
+      "assassin",
+      "multi-opponent",
+      "action"
+    ],
+    "prompt": "This Seedance 2.0 parametric prompt also works with multiple opponents.\n\nUsed parameters:\n\nCHARACTERS:\nA: [ref_image] an assassin with a blade and fluid movement\nB: armored guards with shields and coordinated attacks\n\nENVIRONMENT\ndimly lit palace corridor with pillars and polished stone floor\n\nFIGHT PROFILE\nSTYLE: elegant\nENERGY: high\nWEAPONS: melee\nINTENT: assassination",
+    "media": {
+      "image": "https://pbs.twimg.com/amplify_video_thumb/2044923734323257344/img/OfBVqPs_d3E9v1J0.jpg",
+      "video": "https://video.twimg.com/amplify_video/2044923734323257344/vid/avc1/2206x946/TVSbnpu9235Sge5t.mp4"
+    },
+    "notes": "Variant post that points back to the base fight template.",
+    "localMedia": {
+      "image": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-16-infinite-fight-scenes-variant-multiple-opponents.jpg",
+      "video": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-16-infinite-fight-scenes-variant-multiple-opponents.mp4"
+    }
+  },
+  {
+    "id": "2044056761686990886",
+    "title": "Bullet Time Selfie Template",
+    "date": "2026-04-14",
+    "sourceUrl": "https://x.com/aimikoda/status/2044056761686990886",
+    "category": "Comedy / Bullet-time",
+    "tags": [
+      "bullet-time",
+      "selfie",
+      "template",
+      "continuous-shot",
+      "comedy"
+    ],
+    "prompt": "Seedance 2.0 Parameter Based Prompts\n\nI've been experimenting with variable-based prompting in Seedance 2.0 and built a modular template for these bullet-time selfie sequences.\nThe main video was made with a different prompt. I used it as a base to build this template. It won't always be perfect depending on the scene, but the parameter-based approach is still very usable.\n\nDropped a few examples in the replies, you just need to change the variables.\n\nPrompt Template:\n\nFORMAT: 15s / ONE CONTINUOUS SHOT / BULLET TIME SELFIE\n\nPARAMS:\n<CHARACTER>: define subject, outfit, state\n<ENVIRONMENT>: define location, time, atmosphere\n<UNEXPECTED_EVENT>: define threat / accident / impact\n<OUTCOME_ACTION>: define reaction (attack / dodge / collision / escape)\n<FINAL_STATE>: define ending state\n\nRULE:\nFreeze the world, keep only <CHARACTER> in real-time motion.\nDelay character action inside slow motion (~2s hold before selfie).\nSelfie must clearly include both <CHARACTER> and the <UNEXPECTED_EVENT> in the same frame.\n\nSTRUCTURE:\n\n0.0–3.0s — SETUP\n<CHARACTER> in <ENVIRONMENT>, normal flow.\n<UNEXPECTED_EVENT> begins and escalates rapidly.\n\n3.0–10.0s — PEAK (SLOW MOTION)\n\n3.0–5.0s\nTime slows almost to a freeze at the critical moment.\n<CHARACTER> holds position, tension builds.\n\n5.0–10.0s\n[cam: close, slight orbit / bullet time]\n[sfx: ambience stretch, single phone snap]\n\n<CHARACTER> pulls out phone → takes selfie capturing the moment → puts it back.\n\n10.0–13.0s — OUTCOME ACTION\nTime snaps back instantly.\n\n<OUTCOME_ACTION> plays out.\n\n13.0–15.0s — END\n<FINAL_STATE>.",
+    "media": {
+      "image": "https://pbs.twimg.com/amplify_video_thumb/2044056012567523328/img/8m11vuFZH2mZHXed.jpg",
+      "video": "https://video.twimg.com/amplify_video/2044056012567523328/vid/avc1/2560x1440/toZHn0UkarJn1g8x.mp4"
+    },
+    "notes": "Prompt text from public vxtwitter API; this also appears on a PicX template page.",
+    "localMedia": {
+      "image": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-14-bullet-time-selfie-template.jpg",
+      "video": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-14-bullet-time-selfie-template.mp4"
+    }
+  },
+  {
+    "id": "2041712195591905398",
+    "title": "POV: Paragliding In The Wrong Era",
+    "date": "2026-04-08",
+    "sourceUrl": "https://x.com/aimikoda/status/2041712195591905398",
+    "category": "POV / Extreme adventure",
+    "tags": [
+      "pov",
+      "paragliding",
+      "dinosaur",
+      "adventure",
+      "continuous-shot"
+    ],
+    "prompt": "VISUAL STYLE: Use live-action feature film realism with crisp action-camera sharpness and ancient atmospheric haze.\n\nCHARACTERS:\nDefine a pair of gloved human hands gripping worn paraglider toggles, dark flying boots, and multiple massive prehistoric predators crossing the flight path.\n\nSTAGE:\nSet a vast prehistoric canyon that drops from open sky into fern-choked treetops, a fast river corridor, and a muddy predator clearing under harsh daylight haze.\n\nEMOTIONAL TARGET:\nBuild from reckless speed into unstoppable hunted panic.\n\nCOLOR LOGIC:\nNaturalistic Film Print Emulation\n\nTIMELINE:\n00:00.0: Open on a strict POV suspended over the canyon lip. Use an ultra-wide 14mm action lens with locked forward flight. Drop hard toward the jungle canopy as both gloved hands pull the toggles down and the boots kick into empty air. SFX: Violent wind rush, harness straps snapping tight.\n\n00:03.4: Keep the same locked POV and lens package. Dive between treetop crowns, skim past the swaying neck of a towering long-neck herbivore, and force the right hand to yank the toggle to miss its jawline by inches. SFX: Deep animal bellow, leaves tearing, rising wind scream.\n\n00:06.8: Maintain the uninterrupted plunge. Thread into a narrow river corridor as a flock of pterosaurs erupts off the cliff wall and crosses directly through the flight path. Let the left hand snap the canopy into a hard bank while the boots clear wet rock by inches. SFX: Shrill wingbeats, river thunder, fabric strain.\n\n00:10.2: Hold the same POV and keep driving forward. Blast out of the river bend into a muddy clearing, lose altitude fast, and drag the boot soles across churned earth as the canopy collapses behind the camera path. SFX: Skidding mud scrape, collapsing fabric whip, panicked breath.\n\n00:12.8: Maintain the same first-person line at ground level. Stumble forward two desperate steps, look up, and let a charging Spinosaurus burst out of the river mist with its long jaws thrown wide straight at the lens until the teeth fill the frame. SFX: Ground-shaking footfalls, guttural bellow, snapping jaws.\n\nEXCLUDE:\nAvoid third-person camera breaks, disjointed hands, impossible flight resets, teleporting terrain, frozen creatures, modern gear drift, impossible neck rotation, cut language.",
+    "media": {
+      "image": "https://pbs.twimg.com/amplify_video_thumb/2041711978142474240/img/ufEYoFhxPiUIvon1.jpg",
+      "video": "https://video.twimg.com/amplify_video/2041711978142474240/vid/avc1/1280x720/JDnzjvabs4PMK2HP.mp4"
+    },
+    "notes": "Prompt text reconstructed from the public TwStalker status detail page.",
+    "localMedia": {
+      "image": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-08-pov-paragliding-in-the-wrong-era.jpg",
+      "video": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-08-pov-paragliding-in-the-wrong-era.mp4"
+    }
+  },
+  {
+    "id": "2040200125533016232",
+    "title": "Morning Rush Beat Sync",
+    "date": "2026-04-03",
+    "sourceUrl": "https://x.com/aimikoda/status/2040200125533016232",
+    "mirrorUrl": "https://awesomevideoprompts.com/ja/prompts/2026-04/2040200125533016232-daily-routine/",
+    "category": "Lifestyle / Daily routine",
+    "tags": [
+      "daily",
+      "urban",
+      "music",
+      "cinematic",
+      "story"
+    ],
+    "prompt": "FORMAT: 15s / 145 BPM / 15 SHOTS / beat-synced routine\n\nSUBJECT: @[image1].\nWARDROBE: Sleep tee and lounge shorts at home. Tailored jacket, fitted top, trousers, and lace-up shoes outside.\nENVIRONMENT: Tiny apartment, bright fridge glow, rain-dusted hallway, chrome metro, clean office, then a bedroom in cool window light. Everything feels glossy and lived-in.\nMOOD: Late-for-work panic, clipped momentum, breathless urgency, then an exhausted exhale.\nMUSIC: Fast percussive electro-pop\nCOLOR LOGIC: Hyperreal Pop Look\nSTYLE: Ultra-Realistic.\nLOGIC RULE: Keep logical consistency in wardrobe, props, locations, and action continuity across all shots.\n\nSHOT 1: ECU, 85mm push-in / 06:50 on the phone screen as it shakes on rumpled sheets. / SFX: alarm, sheet rustle.\nSHOT 2: WS, 35mm handheld jolt / Rhythmic cut into her jolting upright through side light, throwing the blanket aside, and planting her feet on the floor in one rushed motion, still in a soft sleep tee and lounge shorts. / SFX: mattress bounce, blanket whip, sharp breath.\nSHOT 3: MCU, 50mm slide / Cut on action into face wash at the sink, droplets catching the top light. / SFX: faucet rush, water slap.\nSHOT 4: Insert shot, 85mm rack focus / Match cut into the toothbrush held at a natural forward brushing angle against the front teeth, hand relaxed and upright, mint foam and mirror eye. / SFX: bristle scrape, sink drip.\nSHOT 5: Interior fridge view, 24mm wide / Object pass into the camera inside the fridge looking out as the door snaps open and her hand darts in, blue fridge light framing a hurried grab for breakfast ingredients. / SFX: fridge hum, bottle clink, shelf rattle.\nSHOT 6: Insert shot, 50mm handheld / Rhythmic cut into eggs and toast hitting the pan under warm practical light. / SFX: butter sizzle, chop tap.\nSHOT 7: MCU, centered 50mm push-in / Match cut into one rushed bite, a quick clock glance, and an immediate rise from the chair. / SFX: crunch, ceramic clink, chair scrape.\nSHOT 8: Bird's-eye insert, 35mm overhead / Cut on action into striped socks snapping on. / SFX: fabric stretch, heel tap.\nSHOT 9: MS, 35mm pivot / Camera wipe into a rushed outfit change as the sleep tee disappears under a fitted top and tailored jacket, then her tote, keys, and transit card get scooped up in one messy grab. / SFX: fabric whip, key jingle, zipper pull, bag rustle.\nSHOT 10: Insert shot, 50mm overhead / Match cut into lace-up shoes slamming on as the laces yank tight in one impatient pull. / SFX: sole thump, lace tug, short breath.\nSHOT 11: WS, 24mm parallax / Whip pan transition into her, now in the tailored outside outfit, rushing through the apartment door into corridor light without breaking stride. / SFX: latch click, rapid footsteps, hallway air.\nSHOT 12: MS to CU, 35mm glide into 85mm push-in / Sound bridge into the metro car interior only as she grips the pole, shifts with the carriage sway, checks the passing station lights, and snaps a tense glance toward the closing doors, reflected chrome streaking around her and the city smearing outside the window. / SFX: rail clatter, carriage screech, door warning chime, tight breath.\nSHOT 13: Insert to MCU, 50mm snap zoom / Smash cut to the office entrance as her access card hits the reader, the glass door unlocks, and she slips through fast before the chair roll and laptop open. / SFX: badge beep, door click, laptop chime.\nSHOT 14: OTS, 35mm handheld / Rhythmic cut into fingers racing across keys, chat windows blinking, coffee by the trackpad, and notifications stacking faster than she clears them. / SFX: keyboard burst, notification ticks, mouse click.\nSHOT 15: WS, 50mm pull-out / L-cut with a match from laptop close to apartment re-entry as the jacket drops, work clothes peel away, and she changes back into sleepwear before collapsing into bed in the opening frame shape. / SFX: door shut, bag drop, fabric rustle, blanket rustle, room tone.",
+    "media": {
+      "image": "https://awesomevideoprompts.com/prompts/2026-04/2040200125533016232-daily-routine/cover.jpg",
+      "video": "https://awesomevideoprompts.com/prompts/2026-04/2040200125533016232-daily-routine/video.mp4"
+    },
+    "notes": "Prompt and preview media mirrored by awesomevideoprompts.com.",
+    "localMedia": {
+      "image": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-03-morning-rush-beat-sync.jpg",
+      "video": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-03-morning-rush-beat-sync.mp4"
+    }
+  },
+  {
+    "id": "2039276148568264875",
+    "title": "Fortnite Live Action Battle",
+    "date": "2026-04-01",
+    "sourceUrl": "https://x.com/aimikoda/status/2039276148568264875",
+    "mirrorUrl": "https://awesomevideoprompts.com/ja/prompts/2026-04/2039276148568264875-fortnite-live-action-battle/",
+    "category": "Gaming / Combat",
+    "tags": [
+      "action",
+      "gaming",
+      "combat",
+      "cinematic",
+      "multi-shot"
+    ],
+    "prompt": "FORMAT: 15s / 146 BPM / 6 CUTS / 3rd person, pop-up builds, vertical combat\n\nSUBJECTS: Two realistic female raiders with bold silhouettes, styled as high-detail Fortnite characters. One wears a sleek black tactical helmet, a futuristic teal armored vest with glowing accents, bright orange utility straps, and glossy white combat boots. The other wears a stylized sand-toned combat jacket with exaggerated shoulder pads, braided hair with neon threads, magenta highlights across her gear, and vibrant yellow high-top sneakers.\nENVIRONMENT: A stylized suburban zone rendered in the vibrant, slightly exaggerated aesthetic of Fortnite. Detached houses have clean geometric shapes, saturated pastel colors, and simplified textures. Driveways, parked cars, trimmed lawns, and wooden fences are slightly oversized and toy-like, with smooth edges and bright highlights. The sky fades into a colorful dusk gradient beyond soft, rounded hills. Light dust puffs, stylized muzzle flashes, and glowing build seams remain clearly visible between rooftops and structures, with holographic placement outlines and snap-in construction effects emphasizing the fast-paced, game-like building mechanics.\nMOOD: Hyper-urgent and aggressive, as suburb erupts into a vertical arena.\nCOLOR LOGIC: Hyperreal Pop Look\nSTYLE: ULTRA REALISTIC, LIVE ACTION\n\nSCENE: They fight dynamically while deploying signature Fortnite-style build mechanics: pop-up walls materialize instantly with holographic previews snapping into solid cover, snap-lock ramps unfold with mechanical precision, and floor panels assemble mid-motion into bridges, elevated firing platforms, and defensive structures, creating a fast-paced, strategic combat environment with vibrant energy.\n\nTIMELINE:\n0:00-0:03: Over-the-shoulder wide shot behind the black-helmeted raider, third person down the street. She sprints and slams a wall marker onto the asphalt. Three panels pop up into a staircase beside a parked sedan. Fast steadicam follow, 24mm wide. SFX: (wind through yards, boots on asphalt, metallic pop, impact pings, distant gunfire). Hot rim light, cool fill.\n\n0:03-0:05: Cut on action. Low over-the-shoulder shot behind the sand-jacketed raider. Two ramps spring out and a floor tile snaps between them, forming a zigzag climb to a garage roof. Fast handheld chase, 24mm spherical. SFX: (hinge snaps, wood thuds, cloth whip, ricochet ring, debris scatter). Sunset glare flashes through seams.\n\n0:05-0:08: Whip pan transition. Third person trailing shot as both fighters spiral apart. A fresh wall stack punches upward, a side floor flips open, and the build jumps to three levels between roofline and driveway. Steadicam orbit, 28mm. SFX: (rapid ratchet, boots on panels, muffled bursts, debris scatter, build pops). Neon seams glow against the block.\n\n0:08-0:11: Hard cut. Tight over-the-shoulder shot behind the black-helmeted raider at the top tier. She pulls a panel into head cover, peeks over it, and fires through the gaps. Fast dolly push with rack focus, 50mm anamorphic. SFX: (strained breathing, impact thuds, shell tinks, panel creak, brief silence before a violent burst). Rim light catches dust.\n\n0:11-0:13: Smash cut. Bird's eye view. The sand-jacketed raider flips a bridge panel out and chains a floor beneath it, sprinting across as a second lane appears mid-run. Locked overhead then sudden pedestal drop, 28mm wide. SFX: (panel slam, latch click, boot hits, debris scatter, cloth snap). Electric highlights pulse through the seams.\n\n0:13-0:15: Hard cut. Tight over-the-shoulder shot behind the black-helmeted raider as she lands on a platform above a driveway, pulls one last wall into cover, and aims at the rival crossing the bridge. Fast forward creep, 35mm anamorphic. SFX: (boots thud on panels, creaking build joints, final metallic ping, breath held then released). Dusk deepens.",
+    "media": {
+      "image": "https://awesomevideoprompts.com/prompts/2026-04/2039276148568264875-fortnite-live-action-battle/cover.jpg",
+      "video": "https://awesomevideoprompts.com/prompts/2026-04/2039276148568264875-fortnite-live-action-battle/video.mp4"
+    },
+    "notes": "Prompt and preview media mirrored by awesomevideoprompts.com.",
+    "localMedia": {
+      "image": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-01-fortnite-live-action-battle.jpg",
+      "video": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-04-01-fortnite-live-action-battle.mp4"
+    }
+  },
+  {
+    "id": "2038285542727487827",
+    "title": "Fashion Sequence",
+    "date": "2026-03-29",
+    "sourceUrl": "https://twitter.com/aimikoda/status/2038285542727487827",
+    "mirrorUrl": "https://awesomevideoprompts.com/ja/prompts/2026-03/2038285542727487827-fashion-sequence/",
+    "category": "Fashion / Product",
+    "tags": [
+      "fashion",
+      "cinematic",
+      "sequence"
+    ],
+    "prompt": "FORMAT: 15s / 128 BPM / ONE CONTINUOUS SHOT / camera accelerates between poses\n\nSUBJECTS: @[image1], One blonde woman with soft waves, a pale satin nightgown, bare shoulders, and over-ear headphones marked \"koda\". Each pose lands like a selected contact sheet frame.\n\nENVIRONMENT: Minimal white cyclorama studio with hard strobe lighting, faint haze, glossy floor reflections, a satin sheet near frame edge, and scattered proof sheets.\n\nMOOD: Cool, sensual, precise, and dreamlike.\n\nCOLOR LOGIC: Hyperreal Pop Look\n\nTIMELINE:\n\n0:00-0:01.5: MCU, centered symmetry. Pose 1, she faces forward with one hand touching the KODA headphones. Camera nearly still with a restrained push-in. 85mm, shallow depth. SFX: shutter click, satin whisper. Hard frontal flash.\n\n0:01.5-0:03.0: Pose 2, she turns three-quarter and lifts her chin, then Pose 3, lowers her gaze with both hands resting at the headphones. Camera accelerates in a descending arc and brakes briefly on the eyes. 50mm to 35mm. SFX: headphone tap, fabric rustle, flash pops.\n\n0:03.0-0:04.5: Pose 4, strict left-side profile, then Pose 5, shoulder rolled forward as the satin strap catches light. Camera whips past the cheek and settles close. 85mm to 100mm. SFX: breath, hair brush, strobe crack. Side light and rim flare.\n\n0:04.5-0:06.0: Pose 6, she gathers a fold of the nightgown at the waist, then Pose 7, lets it fall while turning her mouth toward lens in an over-the-shoulder look. Camera dives to torso level and rises into a close facial pass, speeding up between pose locks. 50mm into 24mm. SFX: satin snap, fingertip glide, shutter chatter.\n\n0:06.0-0:07.5: Pose 8, one knee lifts onto the satin sheet, then Pose 9, one bare foot extends toward lens and dominates foreground. Camera rockets low and forward, then hangs for a fraction on the foot. 20mm ultra wide. SFX: fabric drag, foot tap, flash burst.\n\n0:07.5-0:09.0: Pose 10, she rises into a three-quarter stance, one hand at the collarbone, the other still touching the KODA headphones as the satin dress skims the thigh. Camera slides fast across the waistline and eases into a brief hold. 35mm with a short 85mm insert feel. SFX: satin brush, headphone creak, shutter ticks.\n\n0:09.0-0:11.0: Without repeating, she folds inward, closes her eyes for a beat, then opens into a stretched upward pose with hair spilling back. Camera circles in a tight orbit, slow on each lock and fast through each transition. 50mm spherical. SFX: cloth slip, heel pivot, double shutter hit.\n\n0:11.0-0:13.0: She twists into a back-shoulder silhouette, then turns just enough for the headphone band and neckline to catch the flash together. The camera skims from shoulder to jawline with a fast parallax sweep. 50mm to 85mm. SFX: hair slide, satin brush, flash crack.\n\n0:13.0-0:15.0: Final hero evolution. The camera grazes the KODA logo, rides down the satin neckline, then arcs back as she lands in a dominant full-body pose looking down into lens. Acceleration peaks between details and resolves into a clean wide hold. 24mm to 35mm. SFX: plastic tick, satin whisper, final shutter barrage, room tone falling nearly silent. Hard white flash blooms off the cyc.",
+    "media": {
+      "image": "https://awesomevideoprompts.com/prompts/2026-03/2038285542727487827-fashion-sequence/cover.jpg",
+      "video": "https://awesomevideoprompts.com/prompts/2026-03/2038285542727487827-fashion-sequence/video.mp4"
+    },
+    "notes": "Prompt and preview media mirrored by awesomevideoprompts.com.",
+    "localMedia": {
+      "image": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-03-29-fashion-sequence.jpg",
+      "video": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-03-29-fashion-sequence.mp4"
+    }
+  },
+  {
+    "id": "2032566288967499857",
+    "title": "Motivated Continuous Camera Move",
+    "date": "2026-03-13",
+    "sourceUrl": "https://x.com/aimikoda/status/2032566288967499857",
+    "mirrorUrl": "https://awesomevideoprompts.com/ja/prompts/2026-03/2032564920881958912-motivated-camera-move/",
+    "category": "Cinematography / Camera moves",
+    "tags": [
+      "camera-move",
+      "cinematography"
+    ],
+    "prompt": "FORMAT: cinematic continuous shot / motivated camera movement / 15s\n\nSCENE\nA crowded medieval market street inside a stone city at dusk. Narrow cobblestone road, wooden stalls, hanging banners, livestock moving through the crowd. Warm torchlight reflects on damp stones while light mist drifts between buildings.\n\nCAMERA CONCEPT\nA continuous motivated camera move where each new moving subject entering the frame redirects the camera's attention. Every motion naturally hands the focus to the next subject.\n\nSEQUENCE\n\n0:00–0:03  \nClose street-level view of a market stall.  \nCAMERA FOCUS: a woman bargaining with a merchant while selecting fruit from a wooden basket. She hands coins to the merchant.\n\n0:03–0:05  \nA horse pulling a heavy wooden cart suddenly crosses the foreground from the opposite direction, briefly blocking the frame.  \nCAMERA SHIFT: the camera catches the cart and begins tracking it as it moves through the market.\n\n0:05–0:07  \nThe cart squeezes between stalls and brushes past a hanging banner. The banner swings violently across the frame.  \nCAMERA SHIFT: as the banner clears the view it reveals chickens scattering across the cobblestone street.\n\n0:07–0:09  \nA street boy runs after the escaping chickens, chasing them through the crowd.  \nCAMERA SHIFT: the camera begins following the boy as he runs between villagers.\n\n0:09–0:12  \nThe boy rushes past a tavern entrance and disappears into the crowd.  \nCAMERA SHIFT: the tavern door suddenly swings open as someone exits.\n\n0:12–0:15  \nThe camera glides through the open doorway into the dim tavern interior. Lantern light flickers across wooden tables and drifting smoke.  \nCAMERA FINAL FOCUS: a lone armored knight sitting quietly at a corner table, a massive sword leaning beside the bench as the knight slowly lifts his gaze.\n\nSTYLE\nLayered medieval street life, natural crowd choreography, continuous motivated camera movement.\n\nLIGHTING\nWarm torchlight outside, dim lantern glow inside the tavern, smoke and dust catching the light.\n\nQUALITY\nphotorealistic, cinematic lighting, grounded camera motion, rich medieval atmosphere, highly detailed",
+    "media": {
+      "image": "https://awesomevideoprompts.com/prompts/2026-03/2032564920881958912-motivated-camera-move/cover.jpg",
+      "video": "https://awesomevideoprompts.com/prompts/2026-03/2032564920881958912-motivated-camera-move/video.mp4"
+    },
+    "notes": "Prompt and preview media mirrored by awesomevideoprompts.com.",
+    "localMedia": {
+      "image": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-03-13-motivated-continuous-camera-move.jpg",
+      "video": "/Users/wanglingwei/Library/Mobile Documents/com~apple~CloudDocs/~Vibe-Coding/Codex/Youmind/data/aimikoda-seedance/media/2026-03-13-motivated-continuous-camera-move.mp4"
+    }
+  }
+]

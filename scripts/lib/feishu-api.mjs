@@ -49,7 +49,7 @@ export async function getTenantAccessToken() {
   return payload.tenant_access_token;
 }
 
-export class FeishuBaseApiClient {
+export class FeishuBitableApiClient {
   constructor(token) {
     this.token = token;
   }
@@ -78,30 +78,36 @@ export class FeishuBaseApiClient {
     return payload.data;
   }
 
-  listRecords({ baseToken, tableId, offset = 0, limit = 100, fieldIds = [] }) {
-    return this.request("GET", `/open-apis/base/v3/bases/${baseToken}/tables/${tableId}/records`, {
+  listRecords({ baseToken, tableId, pageToken = "", pageSize = 500 }) {
+    return this.request("GET", `/open-apis/bitable/v1/apps/${baseToken}/tables/${tableId}/records`, {
       query: {
-        field_id: fieldIds,
-        limit,
-        offset
+        page_size: pageSize,
+        page_token: pageToken
       }
     });
   }
 
-  batchCreateRecords({ baseToken, tableId, fields, rows }) {
-    return this.request("POST", `/open-apis/base/v3/bases/${baseToken}/tables/${tableId}/records/batch_create`, {
-      body: {
-        fields,
-        rows
+  batchCreateRecords({ baseToken, tableId, rows }) {
+    return this.request(
+      "POST",
+      `/open-apis/bitable/v1/apps/${baseToken}/tables/${tableId}/records/batch_create`,
+      {
+        body: {
+          records: rows.map((row) => ({ fields: row }))
+        }
       }
-    });
+    );
   }
 
   batchUpdateRecords({ baseToken, tableId, records }) {
-    return this.request("POST", `/open-apis/base/v3/bases/${baseToken}/tables/${tableId}/records/batch_update`, {
-      body: {
-        records
+    return this.request(
+      "POST",
+      `/open-apis/bitable/v1/apps/${baseToken}/tables/${tableId}/records/batch_update`,
+      {
+        body: {
+          records
+        }
       }
-    });
+    );
   }
 }

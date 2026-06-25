@@ -1,42 +1,39 @@
 import { resolveSyncTarget } from "./lib/config.mjs";
-import { FeishuBaseApiClient, getTenantAccessToken } from "./lib/feishu-api.mjs";
+import { FeishuBitableApiClient, getTenantAccessToken } from "./lib/feishu-api.mjs";
 import { loadOrFetchPromptPayload } from "./lib/prompt-source.mjs";
-import { chunk, normalizePromptToRow, rowToValues } from "./lib/prompt-utils.mjs";
-import { FIELD_ORDER, LOOKUP_FIELDS } from "./lib/schema.mjs";
+import { chunk, normalizePromptToRow } from "./lib/prompt-utils.mjs";
 
 async function listAllExistingRecords(client, baseToken, tableId) {
   const records = new Map();
-  let offset = 0;
+  let pageToken = "";
 
   while (true) {
     const data = await client.listRecords({
       baseToken,
       tableId,
-      offset,
-      limit: 100,
-      fieldIds: LOOKUP_FIELDS
+      pageToken
     });
 
-    for (let index = 0; index < data.record_id_list.length; index += 1) {
-      const row = data.data[index] || [];
-      const promptId = row[0] ? String(row[0]) : "";
+    for (const record of data.items || []) {
+      const fields = record.fields || {};
+      const promptId = fields["Prompt ID"] ? String(fields["Prompt ID"]) : "";
 
       if (!promptId) {
         continue;
       }
 
       records.set(promptId, {
-        recordId: data.record_id_list[index],
-        contentHash: row[1] ? String(row[1]) : "",
-        active: Boolean(row[2])
+        recordId: record.record_id,
+        contentHash: fields["Content Hash"] ? String(fields["Content Hash"]) : "",
+        active: fields["Active"] === true || fields["Active"] === "true"
       });
     }
 
-    if (!data.has_more) {
+    if (!data.has_more || !data.page_token) {
       break;
     }
 
-    offset += 100;
+    pageToken = data.page_token;
   }
 
   return records;
@@ -47,8 +44,7 @@ async function batchCreate(client, baseToken, tableId, rows) {
     await client.batchCreateRecords({
       baseToken,
       tableId,
-      fields: FIELD_ORDER,
-      rows: group.map((row) => rowToValues(row, FIELD_ORDER))
+      rows: group
     });
   }
 }
@@ -70,7 +66,7 @@ async function main() {
   const target = resolveSyncTarget();
   const syncedAt = new Date().toISOString();
   const token = await getTenantAccessToken();
-  const client = new FeishuBaseApiClient(token);
+  const client = new FeishuBitableApiClient(token);
   const { payload, source } = await loadOrFetchPromptPayload({
     locale: target.locale,
     model: target.model,

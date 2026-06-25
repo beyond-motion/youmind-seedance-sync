@@ -109,6 +109,15 @@ function listMirrorFields(baseToken, tableId) {
   return Array.isArray(response?.data?.fields) ? response.data.fields : [];
 }
 
+function isFieldAlreadyExistsError(error, fieldName) {
+  const message = String(error?.message || "");
+  return (
+    message.includes("800010205") &&
+    message.includes("validation_error") &&
+    message.includes(`Requested field name: "${fieldName}"`)
+  );
+}
+
 function ensureMirrorFields(baseToken, tableId) {
   const existingFieldNames = new Set(listMirrorFields(baseToken, tableId).map((field) => field.name));
 
@@ -118,16 +127,26 @@ function ensureMirrorFields(baseToken, tableId) {
     }
 
     console.log(`Creating Feishu mirror field: ${field.name}`);
-    runLarkCliJson([
-      "base",
-      "+field-create",
-      "--base-token",
-      baseToken,
-      "--table-id",
-      tableId,
-      "--json",
-      JSON.stringify(field)
-    ]);
+    try {
+      runLarkCliJson([
+        "base",
+        "+field-create",
+        "--base-token",
+        baseToken,
+        "--table-id",
+        tableId,
+        "--json",
+        JSON.stringify(field)
+      ]);
+    } catch (error) {
+      if (!isFieldAlreadyExistsError(error, field.name)) {
+        throw error;
+      }
+
+      console.warn(`Feishu mirror field already exists, skipping create: ${field.name}`);
+    }
+
+    existingFieldNames.add(field.name);
   }
 }
 

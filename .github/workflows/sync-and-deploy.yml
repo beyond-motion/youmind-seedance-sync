@@ -76,13 +76,19 @@ jobs:
           echo "current_hash=$current_hash" >> "$GITHUB_OUTPUT"
           echo "should_sync=$should_sync" >> "$GITHUB_OUTPUT"
 
-      - name: Sync to Feishu with local lark-cli
+      - name: Sync to Feishu via Open API
         if: ${{ steps.sync-gate.outputs.should_sync == 'true' }}
-        continue-on-error: true
         env:
+          FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
+          FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
           FEISHU_BASE_TOKEN: ${{ secrets.FEISHU_BASE_TOKEN }}
           FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
-        run: npm run sync:lark:local-auth
+        run: |
+          if [[ -n "${FEISHU_APP_ID}" && -n "${FEISHU_APP_SECRET}" && -n "${FEISHU_BASE_TOKEN}" && -n "${FEISHU_TABLE_ID}" ]]; then
+            npm run sync:api
+          else
+            echo "Skipping Open API sync because required secrets are missing."
+          fi
 
       - name: Mirror videos to R2
         if: ${{ steps.sync-gate.outputs.should_sync == 'true' && vars.ENABLE_R2_MIRROR == '1' }}
